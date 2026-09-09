@@ -15,6 +15,6 @@ public class TableDTO
         this.id = model.id;
         this.tableNumber = model.tableNumber;
         this.capacity = model.capacity;
-        this.status = TableStatus.valueOf(model.status);
+        this.status = model.status;
     }
 }

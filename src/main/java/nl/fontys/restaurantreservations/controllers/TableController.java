@@ -22,4 +22,10 @@ public class TableController
     {
         return tableService.getAllActiveTables();
     }
+
+    @PostMapping
+    public void createTable(String tableNumber, Integer capacity, String status)
+    {
+        tableService.createTable(tableNumber, capacity, status);
+    }
 }
