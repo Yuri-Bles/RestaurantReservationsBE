@@ -9,15 +9,25 @@ public class TableModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
     @Column(name = "table_number")
-    public String tableNumber;
+    private String tableNumber;
 
-    public Integer capacity;
+    private Integer capacity;
 
     @Enumerated(EnumType.STRING)
-    public TableStatus status;
+    private TableStatus status;
+
+    protected TableModel() {
+    }
+
+    public TableModel(String tableNumber, Integer capacity, TableStatus status)
+    {
+        this.tableNumber = tableNumber;
+        this.capacity = capacity;
+        this.status = status;
+    }
 
     public TableModel(String tableNumber, Integer capacity, String status)
     {
@@ -26,10 +36,33 @@ public class TableModel {
         this.status = TableStatus.valueOf(status);
     }
 
-    public TableModel(String tableNumber, Integer capacity, TableStatus status)
-    {
+    //Getters
+    public Long getId() {
+        return id;
+    }
+
+    public String getTableNumber() {
+        return tableNumber;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public TableStatus getStatus() {
+        return status;
+    }
+
+    //Setters
+    public void setTableNumber(String tableNumber) {
         this.tableNumber = tableNumber;
+    }
+
+    public void setCapacity(Integer capacity) {
         this.capacity = capacity;
+    }
+
+    public void setStatus(TableStatus status) {
         this.status = status;
     }
 }
