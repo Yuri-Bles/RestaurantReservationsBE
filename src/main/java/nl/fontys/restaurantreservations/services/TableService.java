@@ -4,6 +4,7 @@ import nl.fontys.restaurantreservations.dtos.*;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.interfaces.ITableRepository;
 import nl.fontys.restaurantreservations.models.TableModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,12 +27,26 @@ public class TableService
                 .toList();
     }
 
-    public void createTable(String tableNumber, Integer capacity, String statusString)
+    public ResponseEntity createTable(String tableNumber, Integer capacity, TableStatus status)
     {
-        TableStatus status = TableStatus.valueOf(statusString);
-
         TableModel model = new TableModel(tableNumber, capacity, status);
 
+        if (tableNumber.isBlank())
+        {
+            return ResponseEntityCreator.returnResponseEntity(400, "Table number is required");
+        }
+        else if (!isTableNumberAvailable(tableNumber))
+        {
+            return ResponseEntityCreator.returnResponseEntity(400, "Table number must be unique");
+        }
+
         repo.save(model);
+        return null;
+    }
+
+    private boolean isTableNumberAvailable(String tableNumber)
+    {
+        Optional<TableModel> result = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active);
+        return result.isEmpty();
     }
 }

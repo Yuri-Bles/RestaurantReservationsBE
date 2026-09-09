@@ -12,9 +12,9 @@ public class TableDTO
 
     public TableDTO(TableModel model)
     {
-        this.id = model.id;
-        this.tableNumber = model.tableNumber;
-        this.capacity = model.capacity;
-        this.status = model.status;
+        this.id = model.getId();
+        this.tableNumber = model.getTableNumber();
+        this.capacity = model.getCapacity();
+        this.status = model.getStatus();
     }
 }

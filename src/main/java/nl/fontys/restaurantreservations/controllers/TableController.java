@@ -1,7 +1,9 @@
 package nl.fontys.restaurantreservations.controllers;
 
+import nl.fontys.restaurantreservations.dtos.CreateTableRequest;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.services.TableService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +26,8 @@ public class TableController
     }
 
     @PostMapping
-    public void createTable(String tableNumber, Integer capacity, String status)
+    public ResponseEntity createTable(@RequestBody CreateTableRequest request)
     {
-        tableService.createTable(tableNumber, capacity, status);
+        return tableService.createTable(request.tableNumber(), request.capacity(), request.status());
     }
 }
