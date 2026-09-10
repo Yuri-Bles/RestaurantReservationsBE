@@ -46,7 +46,8 @@ public class TableService
 
     private boolean isTableNumberAvailable(String tableNumber)
     {
-        Optional<TableModel> result = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active);
-        return result.isEmpty();
+        Optional<TableModel> activeResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active);
+        Optional<TableModel> inactiveResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive);
+        return (activeResult.isEmpty() && inactiveResult.isEmpty());
     }
 }
