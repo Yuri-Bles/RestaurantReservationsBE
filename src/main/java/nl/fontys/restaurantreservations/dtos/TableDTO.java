@@ -3,18 +3,18 @@ package nl.fontys.restaurantreservations.dtos;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.models.TableModel;
 
-public class TableDTO
-{
-    public Long id;
-    public String tableNumber;
-    public Integer capacity;
-    public TableStatus status;
-
-    public TableDTO(TableModel model)
-    {
-        this.id = model.getId();
-        this.tableNumber = model.getTableNumber();
-        this.capacity = model.getCapacity();
-        this.status = model.getStatus();
+public record TableDTO(
+        Long id,
+        String tableNumber,
+        Integer capacity,
+        TableStatus status
+) {
+    public TableDTO(TableModel table) {
+        this(
+                table.getId(),
+                table.getTableNumber(),
+                table.getCapacity(),
+                table.getStatus()
+        );
     }
 }

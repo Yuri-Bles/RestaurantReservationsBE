@@ -26,7 +26,7 @@ public class TableController
     }
 
     @PostMapping
-    public ResponseEntity createTable(@RequestBody CreateTableRequest request)
+    public ResponseEntity<?> createTable(@RequestBody CreateTableRequest request)
     {
         return tableService.createTable(request.tableNumber(), request.capacity(), request.status());
     }

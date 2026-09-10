@@ -1,13 +1,8 @@
 package nl.fontys.restaurantreservations.repositories;
 
 import jakarta.persistence.EntityManager;
-import nl.fontys.restaurantreservations.dtos.*;
-import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.interfaces.ITableRepository;
-import nl.fontys.restaurantreservations.models.*;
 import org.springframework.stereotype.*;
-
-import java.util.*;
 
 @Repository
 public abstract class TableRepository implements ITableRepository
