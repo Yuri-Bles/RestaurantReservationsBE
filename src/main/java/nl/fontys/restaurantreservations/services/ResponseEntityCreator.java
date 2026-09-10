@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 
 public final class ResponseEntityCreator
 {
-    public static ResponseEntity returnResponseEntity(Integer status, String message)
+    public static ResponseEntity<?> returnResponseEntity(Integer status, String message)
     {
         return ResponseEntity
                 .status(status)
