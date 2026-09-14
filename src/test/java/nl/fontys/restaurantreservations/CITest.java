@@ -11,10 +11,4 @@ class CITest
     {
         assertEquals(1, 1);
     }
-
-    @Test
-    public void dummyTestFail()
-    {
-        assertEquals(1, 2);
-    }
 }
