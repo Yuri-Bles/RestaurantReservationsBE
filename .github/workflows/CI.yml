@@ -39,15 +39,15 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Test
-        run: ./gradlew test
-
       - name: Build
         run: ./gradlew build
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
           SPRING_DATASOURCE_USERNAME: test
           SPRING_DATASOURCE_PASSWORD: test
+
+      - name: Test
+        run: ./gradlew test
 
   dependency-submission:
 
