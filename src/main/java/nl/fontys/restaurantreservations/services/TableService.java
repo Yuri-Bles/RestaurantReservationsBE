@@ -29,19 +29,38 @@ public class TableService
 
     public ResponseEntity<?> createTable(String tableNumber, Integer capacity, TableStatus status)
     {
+        if (!tableNumber.isBlank() && isTableNumberAvailable(tableNumber))
+        {
+            return ResponseEntityCreator.returnResponseEntity(400, "Table number is not valid.");
+        }
+
         TableModel model = new TableModel(tableNumber, capacity, status);
-
-        if (tableNumber.isBlank())
-        {
-            return ResponseEntityCreator.returnResponseEntity(400, "Table number is required.");
-        }
-        else if (!isTableNumberAvailable(tableNumber))
-        {
-            return ResponseEntityCreator.returnResponseEntity(400, "Table number must be unique.");
-        }
-
         repo.save(model);
         return ResponseEntityCreator.returnResponseEntity(201, "Table successfully created.");
+    }
+
+    public ResponseEntity<?> updateTable(String oldTableNumber, String newTableNumber, Integer capacity, TableStatus status)
+    {
+        TableModel model;
+
+        try
+        { model = getTableIdTableNumber(oldTableNumber); }
+        catch (Exception ex)
+        { return ResponseEntityCreator.returnResponseEntity(400, "Table doesn't exist"); }
+
+        if (newTableNumber.isBlank())
+        { return ResponseEntityCreator.returnResponseEntity(400, "Table number is not valid."); }
+
+        model.setTableNumber(newTableNumber);
+        model.setCapacity(capacity);
+        model.setStatus(status);
+        
+        try
+        { repo.save(model); }
+        catch (Exception ex)
+        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later. " + ex); }
+
+        return ResponseEntityCreator.returnResponseEntity(200, "Table successfully updated.");
     }
 
     private boolean isTableNumberAvailable(String tableNumber)
@@ -49,5 +68,11 @@ public class TableService
         Optional<TableModel> activeResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active);
         Optional<TableModel> inactiveResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive);
         return (activeResult.isEmpty() && inactiveResult.isEmpty());
+    }
+
+    private TableModel getTableIdTableNumber(String tableNumber)
+    {
+        return repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active).or(() ->
+                repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive)).orElseThrow();
     }
 }

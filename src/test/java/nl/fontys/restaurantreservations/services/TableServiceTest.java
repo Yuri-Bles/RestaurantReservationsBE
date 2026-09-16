@@ -108,4 +108,11 @@ class TableServiceTest
         // Assert
         assertEquals(400, response.getStatusCode().value());
     }
+
+    @Test
+    void updateTable_shouldUpdateTable_whenValuesAreValidAndTableExists()
+    {
+        TableModel expected = new TableModel("T01", 4, TableStatus.Active);
+        TableDTO TableDTO = new TableDTO(expected);
+    }
 }

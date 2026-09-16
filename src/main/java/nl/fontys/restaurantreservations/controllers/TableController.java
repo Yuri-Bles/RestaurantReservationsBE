@@ -2,6 +2,8 @@ package nl.fontys.restaurantreservations.controllers;
 
 import nl.fontys.restaurantreservations.dtos.CreateTableRequest;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
+import nl.fontys.restaurantreservations.dtos.UpdateTableRequest;
+import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.services.TableService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,5 +31,11 @@ public class TableController
     public ResponseEntity<?> createTable(@RequestBody CreateTableRequest request)
     {
         return tableService.createTable(request.tableNumber(), request.capacity(), request.status());
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateTable(@RequestBody UpdateTableRequest request)
+    {
+        return tableService.updateTable(request.oldTableNumber(), request.newTableNumber(), request.capacity(), request.status());
     }
 }
