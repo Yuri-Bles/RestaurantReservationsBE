@@ -16,9 +16,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/RestaurantReservations
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: FullStackDevelopment4!
+      DB_URL: jdbc:postgresql://database:5432/RestaurantReservations
+      DB_USERNAME: postgres
+      DB_PASSWORD: FullStackDevelopment4!
     depends_on:
       - database
 
