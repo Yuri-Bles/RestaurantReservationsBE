@@ -43,6 +43,6 @@ public class TableController
     @DeleteMapping
     public ResponseEntity<?> deleteTable(@RequestBody DeleteTableRequest request)
     {
-        return tableService.deleteTable(request.tableNumber(), request.status());
+        return tableService.deleteTable(request.tableNumber());
     }
 }

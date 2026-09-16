@@ -29,7 +29,7 @@ public class TableService
 
     public ResponseEntity<?> createTable(String tableNumber, Integer capacity, TableStatus status)
     {
-        if (!tableNumber.isBlank() && isTableNumberAvailable(tableNumber))
+        if (tableNumber.isBlank() || !isTableNumberAvailable(tableNumber))
         {
             return ResponseEntityCreator.returnResponseEntity(400, "Table number is not valid.");
         }
@@ -63,7 +63,7 @@ public class TableService
         return ResponseEntityCreator.returnResponseEntity(200, "Table successfully updated.");
     }
 
-    public ResponseEntity<?> deleteTable(String tableNumber, TableStatus status)
+    public ResponseEntity<?> deleteTable(String tableNumber)
     {
         TableModel model;
         try

@@ -38,6 +38,12 @@ class CreateTableTest
         TableDTO newTableDTO = new TableDTO(expected);
         ArgumentCaptor<TableModel> captor = ArgumentCaptor.forClass(TableModel.class);
 
+        when(repo.findByTableNumberAndStatus("T01", TableStatus.Active))
+                .thenReturn(Optional.empty());
+
+        when(repo.findByTableNumberAndStatus("T01", TableStatus.Inactive))
+                .thenReturn(Optional.empty());
+
         // Act
         service.createTable(newTableDTO.tableNumber(), newTableDTO.capacity(), newTableDTO.status());
 
