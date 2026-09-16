@@ -1,9 +1,8 @@
 package nl.fontys.restaurantreservations.controllers;
 
-import nl.fontys.restaurantreservations.dtos.CreateTableRequest;
+import nl.fontys.restaurantreservations.dtos.requests.table.CreateTableRequest;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
-import nl.fontys.restaurantreservations.dtos.UpdateTableRequest;
-import nl.fontys.restaurantreservations.enums.TableStatus;
+import nl.fontys.restaurantreservations.dtos.requests.table.UpdateTableRequest;
 import nl.fontys.restaurantreservations.services.TableService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

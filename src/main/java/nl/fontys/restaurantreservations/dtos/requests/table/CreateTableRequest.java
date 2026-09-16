@@ -1,4 +1,4 @@
-package nl.fontys.restaurantreservations.dtos;
+package nl.fontys.restaurantreservations.dtos.requests.table;
 
 import nl.fontys.restaurantreservations.enums.TableStatus;
 
