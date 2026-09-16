@@ -63,6 +63,24 @@ public class TableService
         return ResponseEntityCreator.returnResponseEntity(200, "Table successfully updated.");
     }
 
+    public ResponseEntity<?> deleteTable(String tableNumber, TableStatus status)
+    {
+        TableModel model;
+        try
+        { model = getTableByTableNumber(tableNumber); }
+        catch (Exception ex)
+        { return ResponseEntityCreator.returnResponseEntity(400, "Table does not exist."); }
+
+        model.setStatus(TableStatus.Removed);
+
+        try
+        { repo.save(model); }
+        catch (Exception ex)
+        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later."); }
+
+        return ResponseEntityCreator.returnResponseEntity(200, "Table successfully removed.");
+    }
+
     private boolean isTableNumberAvailable(String tableNumber)
     {
         Optional<TableModel> activeResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active);

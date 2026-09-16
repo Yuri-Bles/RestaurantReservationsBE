@@ -2,7 +2,9 @@ package nl.fontys.restaurantreservations.controllers;
 
 import nl.fontys.restaurantreservations.dtos.requests.table.CreateTableRequest;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
+import nl.fontys.restaurantreservations.dtos.requests.table.DeleteTableRequest;
 import nl.fontys.restaurantreservations.dtos.requests.table.UpdateTableRequest;
+import nl.fontys.restaurantreservations.services.ResponseEntityCreator;
 import nl.fontys.restaurantreservations.services.TableService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,5 +38,11 @@ public class TableController
     public ResponseEntity<?> updateTable(@RequestBody UpdateTableRequest request)
     {
         return tableService.updateTable(request.oldTableNumber(), request.newTableNumber(), request.capacity(), request.status());
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteTable(@RequestBody DeleteTableRequest request)
+    {
+        return tableService.deleteTable(request.tableNumber(), request.status());
     }
 }
