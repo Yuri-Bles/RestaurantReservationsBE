@@ -1,0 +1,26 @@
+services:
+
+  database:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: RestaurantReservations
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: FullStackDevelopment4!
+    ports:
+      - "5432:5432"
+    volumes:
+      - restaurant-reservation-data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/RestaurantReservations
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: FullStackDevelopment4!
+    depends_on:
+      - database
+
+volumes:
+  restaurant-reservation-data:
