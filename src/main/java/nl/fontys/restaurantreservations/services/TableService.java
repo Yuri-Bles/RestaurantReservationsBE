@@ -44,7 +44,7 @@ public class TableService
         TableModel model;
 
         try
-        { model = getTableIdTableNumber(oldTableNumber); }
+        { model = getTableByTableNumber(oldTableNumber); }
         catch (Exception ex)
         { return ResponseEntityCreator.returnResponseEntity(400, "Table doesn't exist"); }
 
@@ -54,7 +54,7 @@ public class TableService
         model.setTableNumber(newTableNumber);
         model.setCapacity(capacity);
         model.setStatus(status);
-        
+
         try
         { repo.save(model); }
         catch (Exception ex)
@@ -70,7 +70,7 @@ public class TableService
         return (activeResult.isEmpty() && inactiveResult.isEmpty());
     }
 
-    private TableModel getTableIdTableNumber(String tableNumber)
+    private TableModel getTableByTableNumber(String tableNumber)
     {
         return repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active).or(() ->
                 repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive)).orElseThrow();
