@@ -104,6 +104,28 @@ class UpdateTableTest
     }
 
     @Test
+    void updateTable_shouldReturn400_whenCapacityIsBelow1()
+    {
+        // Arrange
+        String oldTableNumber = "T01";
+        TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
+        TableModel expected = new TableModel("T02", -4, TableStatus.Active);
+        TableDTO TableDTO = new TableDTO(expected);
+
+        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
+                .thenReturn(Optional.empty());
+
+        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
+                .thenReturn(Optional.of(existing));
+
+        // Act
+        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO.tableNumber(), TableDTO.capacity(), TableDTO.status());
+
+        // Assert
+        assertEquals(400, response.getStatusCode().value());
+    }
+
+    @Test
     void updateTable_shouldReturn500_whenSavingModelFails()
     {
         // Arrange
