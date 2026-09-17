@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/tables")
+@RequestMapping("/apiv1/tables")
 public class TableController
 {
     private final TableService tableService;
