@@ -93,4 +93,24 @@ class CreateTableTest
         // Assert
         assertEquals(400, response.getStatusCode().value());
     }
+
+    @Test
+    void createTable_shouldReturn400_whenCapacityIsBelow1()
+    {
+        // Arrange
+        TableModel newTableModel = new TableModel("T01", -4, TableStatus.Active);
+        TableDTO newTableDTO = new TableDTO(newTableModel);
+        when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active)).thenReturn(Optional.of(newTableModel));
+
+        // Act
+        ResponseEntity<?> response = service.createTable(
+                newTableDTO.tableNumber(),
+                newTableDTO.capacity(),
+                newTableDTO.status()
+        );
+
+        // Assert
+        assertEquals(400, response.getStatusCode().value());
+    }
+
 }
