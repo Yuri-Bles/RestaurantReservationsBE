@@ -4,7 +4,6 @@ import nl.fontys.restaurantreservations.dtos.requests.table.CreateTableRequest;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.dtos.requests.table.DeleteTableRequest;
 import nl.fontys.restaurantreservations.dtos.requests.table.UpdateTableRequest;
-import nl.fontys.restaurantreservations.services.ResponseEntityCreator;
 import nl.fontys.restaurantreservations.services.TableService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

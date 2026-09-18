@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 
 @Entity
-@Table(name="tables")
+@Table(name = "tables")
 public class TableModel {
 
     @Id

@@ -9,5 +9,6 @@ import java.util.*;
 public interface ITableRepository extends JpaRepository<TableModel, Long>
 {
     List<TableModel> findAllByStatus(TableStatus status);
+
     Optional<TableModel> findByTableNumberAndStatus(String tableNumber, TableStatus status);
 }
