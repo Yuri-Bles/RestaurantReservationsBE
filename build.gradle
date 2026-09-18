@@ -39,3 +39,7 @@ tasks.named('test') {
 checkstyle {
     toolVersion = '14.1.0'
 }
+
+tasks.withType(Checkstyle).configureEach {
+    exclude("src/main/test/**")
+}
