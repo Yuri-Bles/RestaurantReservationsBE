@@ -9,6 +9,13 @@ public final class ResponseEntityCreator
     {
         return ResponseEntity
                 .status(status)
-                .body(new ApiMessage(status, message));
+                .body(new ApiMessage(status, message, null));
+    }
+
+    public static ResponseEntity<?> returnResponseEntity(Integer status, String message, Object body)
+    {
+        return ResponseEntity
+                .status(status)
+                .body(new ApiMessage(status, message, body));
     }
 }

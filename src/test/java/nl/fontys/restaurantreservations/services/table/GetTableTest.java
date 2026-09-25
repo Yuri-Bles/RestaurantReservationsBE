@@ -1,9 +1,11 @@
 package nl.fontys.restaurantreservations.services.table;
 
+import nl.fontys.restaurantreservations.dtos.ApiMessage;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.interfaces.ITableRepository;
 import nl.fontys.restaurantreservations.models.TableModel;
+import nl.fontys.restaurantreservations.services.ResponseEntityCreator;
 import nl.fontys.restaurantreservations.services.TableService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,13 +43,18 @@ class GetTableTest
         TableDTO table2 = new TableDTO(tableModel2);
         TableDTO table3 = new TableDTO(tableModel3);
 
-        List<TableDTO> expected = List.of(table1, table2, table3);
+        List<TableDTO> dtoList = List.of(table1, table2, table3);
+        ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(
+                200,
+                "Got tables successfully",
+                dtoList);
+
         List<TableModel> repoReturn = List.of(tableModel1, tableModel2, tableModel3);
 
         when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
 
         // Act
-        List<TableDTO> actual = service.getAllActiveTables();
+        ResponseEntity<?> actual = service.getAllActiveTables();
 
         // Assert
         assertEquals(expected, actual);

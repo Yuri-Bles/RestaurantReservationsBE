@@ -19,12 +19,17 @@ public class TableService
         this.repo = repo;
     }
 
-    public List<TableDTO> getAllActiveTables()
+    public ResponseEntity<?> getAllActiveTables()
     {
-        return repo.findAllByStatus(TableStatus.Active)
+        List<TableDTO> tables = repo.findAllByStatus(TableStatus.Active)
                 .stream()
                 .map(TableDTO::new)
                 .toList();
+
+        if (tables.isEmpty())
+        { return ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables"); }
+
+        return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", tables);
     }
 
     public ResponseEntity<?> createTable(String tableNumber, Integer capacity, TableStatus status)

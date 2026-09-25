@@ -22,7 +22,7 @@ public class TableController
     }
 
     @GetMapping
-    public List<TableDTO> getAllActiveTables()
+    public ResponseEntity<?> getAllActiveTables()
     {
         return tableService.getAllActiveTables();
     }
