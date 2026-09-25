@@ -59,4 +59,29 @@ class GetTableTest
         // Assert
         assertEquals(expected, actual);
     }
+
+    @Test
+    void getAllActiveTables_shouldReturn500_whenRepoDoesntReturnTables()
+    {
+        // Arrange
+        TableModel tableModel1 = new TableModel("T01", 4, TableStatus.Active);
+        TableModel tableModel2 = new TableModel("T02", 6, TableStatus.Active);
+        TableModel tableModel3 = new TableModel("T03", 6, TableStatus.Active);
+        TableDTO table1 = new TableDTO(tableModel1);
+        TableDTO table2 = new TableDTO(tableModel2);
+        TableDTO table3 = new TableDTO(tableModel3);
+
+        List<TableDTO> dtoList = List.of(table1, table2, table3);
+        ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables");
+
+        List<TableModel> repoReturn = List.of();
+
+        when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
+
+        // Act
+        ResponseEntity<?> actual = service.getAllActiveTables();
+
+        // Assert
+        assertEquals(expected, actual);
+    }
 }
