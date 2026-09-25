@@ -4,23 +4,34 @@ services:
     image: postgres:17
     environment:
       POSTGRES_DB: RestaurantReservations
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: FullStackDevelopment4!
+      POSTGRES_USER_FILE: /run/secrets/DB_USERNAME
+      POSTGRES_PASSWORD_FILE: /run/secrets/DB_PASSWORD
+    secrets:
+      - DB_USERNAME
+      - DB_PASSWORD
     ports:
       - "5432:5432"
     volumes:
       - restaurant-reservation-data:/var/lib/postgresql/data
 
   backend:
+    image: restaurantreservationsbe
     build: .
     ports:
       - "8080:8080"
     environment:
       DB_URL: jdbc:postgresql://database:5432/RestaurantReservations
-      DB_USERNAME: postgres
-      DB_PASSWORD: FullStackDevelopment4!
+    secrets:
+      - DB_USERNAME
+      - DB_PASSWORD
     depends_on:
       - database
+
+secrets:
+  DB_USERNAME:
+    file: ./secrets/DB_USERNAME.txt
+  DB_PASSWORD:
+    file: ./secrets/DB_PASSWORD.txt
 
 volumes:
   restaurant-reservation-data:
