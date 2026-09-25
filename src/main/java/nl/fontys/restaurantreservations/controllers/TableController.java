@@ -1,14 +1,11 @@
 package nl.fontys.restaurantreservations.controllers;
 
 import nl.fontys.restaurantreservations.dtos.requests.table.CreateTableRequest;
-import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.dtos.requests.table.DeleteTableRequest;
 import nl.fontys.restaurantreservations.dtos.requests.table.UpdateTableRequest;
 import nl.fontys.restaurantreservations.services.TableService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/apiv1/tables")
@@ -22,7 +19,7 @@ public class TableController
     }
 
     @GetMapping
-    public List<TableDTO> getAllActiveTables()
+    public ResponseEntity<?> getAllActiveTables()
     {
         return tableService.getAllActiveTables();
     }
