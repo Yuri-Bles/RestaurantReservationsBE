@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 @Service
 public class TableService
@@ -23,6 +24,20 @@ public class TableService
     {
         List<TableDTO> tables = repo.findAllByStatus(TableStatus.Active)
                 .stream()
+                .map(TableDTO::new)
+                .toList();
+
+        if (tables.isEmpty())
+        { return ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables"); }
+
+        return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", tables);
+    }
+
+    public ResponseEntity<?> getAllExistingTables()
+    {
+        List<TableDTO> tables = Stream.concat(
+                        repo.findAllByStatus(TableStatus.Active).stream(),
+                        repo.findAllByStatus(TableStatus.Inactive).stream())
                 .map(TableDTO::new)
                 .toList();
 

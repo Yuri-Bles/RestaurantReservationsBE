@@ -25,6 +25,12 @@ public class TableController
         return tableService.getAllActiveTables();
     }
 
+    @GetMapping("/existing")
+    public ResponseEntity<?> getAllExistingTables() //Existing means any table without the Removed status.
+    {
+        return tableService.getAllExistingTables();
+    }
+
     @PostMapping
     public ResponseEntity<?> createTable(@RequestBody CreateTableRequest request)
     {
