@@ -84,4 +84,52 @@ class GetTableTest
         // Assert
         assertEquals(expected, actual);
     }
+
+    @Test
+    void getAllExistingTables_shouldReturnExistingTables()
+    {
+        // Arrange
+        TableModel tableModel1 = new TableModel("T01", 4, TableStatus.Active);
+        TableModel tableModel2 = new TableModel("T02", 6, TableStatus.Inactive);
+        TableModel tableModel3 = new TableModel("T03", 6, TableStatus.Inactive);
+        TableDTO table1 = new TableDTO(tableModel1);
+        TableDTO table2 = new TableDTO(tableModel2);
+        TableDTO table3 = new TableDTO(tableModel3);
+
+        List<TableDTO> dtoList = List.of(table1, table2, table3);
+        ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(
+                200,
+                "Got tables successfully",
+                dtoList);
+
+        List<TableModel> repoReturnActive = List.of(tableModel1);
+        List<TableModel> repoReturnInactive = List.of(tableModel2, tableModel3);
+
+        when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturnActive);
+        when(repo.findAllByStatus(TableStatus.Inactive)).thenReturn(repoReturnInactive);
+
+        // Act
+        ResponseEntity<?> actual = service.getAllExistingTables();
+
+        // Assert
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getAllExistingTables_shouldReturn500_whenRepoDoesntReturnTables()
+    {
+        // Arrange
+        ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables");
+
+        List<TableModel> repoReturn = List.of();
+
+        when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
+        when(repo.findAllByStatus(TableStatus.Inactive)).thenReturn(repoReturn);
+
+        // Act
+        ResponseEntity<?> actual = service.getAllExistingTables();
+
+        // Assert
+        assertEquals(expected, actual);
+    }
 }
