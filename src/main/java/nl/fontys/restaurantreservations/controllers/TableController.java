@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/apiv1/tables")
+@CrossOrigin(origins = "http://localhost:5173")
 public class TableController
 {
     private final TableService tableService;
