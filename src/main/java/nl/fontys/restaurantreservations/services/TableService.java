@@ -25,6 +25,10 @@ public class TableService
         List<TableDTO> tables = repo.findAllByStatus(TableStatus.Active)
                 .stream()
                 .map(TableDTO::new)
+                .sorted(
+                        Comparator.comparing(TableDTO::status)
+                                .thenComparing(TableDTO::tableNumber)
+                )
                 .toList();
 
         if (tables.isEmpty())
@@ -39,6 +43,10 @@ public class TableService
                         repo.findAllByStatus(TableStatus.Active).stream(),
                         repo.findAllByStatus(TableStatus.Inactive).stream())
                 .map(TableDTO::new)
+                .sorted(
+                        Comparator.comparing(TableDTO::status)
+                                .thenComparing(TableDTO::tableNumber)
+                )
                 .toList();
 
         if (tables.isEmpty())
