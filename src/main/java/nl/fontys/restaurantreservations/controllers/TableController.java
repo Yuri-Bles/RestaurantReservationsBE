@@ -19,7 +19,7 @@ public class TableController
         this.tableService = tableService;
     }
 
-    @GetMapping
+    @GetMapping("/active")
     public ResponseEntity<?> getAllActiveTables()
     {
         return tableService.getAllActiveTables();
