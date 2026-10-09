@@ -17,4 +17,8 @@ public record TableDTO(
                 table.getStatus()
         );
     }
+
+    public TableDTO(String tableNumber, Integer capacity, TableStatus status) {
+        this(null, tableNumber, capacity, status);
+    }
 }

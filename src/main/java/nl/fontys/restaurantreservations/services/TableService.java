@@ -55,20 +55,26 @@ public class TableService
         return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", tables);
     }
 
-    public ResponseEntity<?> createTable(String tableNumber, Integer capacity, TableStatus status)
+    public ResponseEntity<?> createTable(TableDTO dto)
     {
-        if (tableNumber.isBlank() || !isTableNumberAvailable(tableNumber))
+        if (dto.tableNumber().isBlank() || !isTableNumberAvailable(dto.tableNumber()))
         {
             return ResponseEntityCreator.returnResponseEntity(400, "Table number is not valid.");
         }
 
-        if (capacity <= 0)
+        if (dto.capacity() <= 0)
         {
             return ResponseEntityCreator.returnResponseEntity(400, "Table capacity must be above 0.");
         }
 
-        TableModel model = new TableModel(tableNumber, capacity, status);
-        repo.save(model);
+        TableModel model = new TableModel(dto.tableNumber(), dto.capacity(), dto.status());
+
+        try {
+            repo.save(model);
+        }
+        catch (Exception ex) {
+            return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong internally.");
+        }
         return ResponseEntityCreator.returnResponseEntity(201, "Table successfully created.");
     }
 
