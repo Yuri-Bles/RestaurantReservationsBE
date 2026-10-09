@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,7 +48,7 @@ class UpdateTableTest
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        service.updateTable(oldTableNumber, TableDTO.tableNumber(), TableDTO.capacity(), TableDTO.status());
+        service.updateTable(oldTableNumber, TableDTO);
 
         // Assert
         verify(repo).save(captor.capture());
@@ -77,16 +76,17 @@ class UpdateTableTest
                 .thenReturn(Optional.of(existing));
 
         // Act
-        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO.tableNumber(), TableDTO.capacity(), TableDTO.status());
+        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO);
 
         // Assert
         assertEquals(400, response.getStatusCode().value());
     }
 
     @Test
-    void updateTable_shouldReturn400_whenTableDoesNotExist()
+    void updateTable_shouldReturn404_whenTableDoesNotExist()
     {
         // Arrange
+        TableDTO TableDTO = new TableDTO("T02", 4, TableStatus.Active);
         String tableNumber = "T01";
 
         when(repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active))
@@ -96,11 +96,30 @@ class UpdateTableTest
                 .thenReturn(Optional.empty());
 
         // Act
-        ResponseEntity<?> response = service.updateTable(tableNumber, "T02", 4, TableStatus.Active);
+        ResponseEntity<?> response = service.updateTable(tableNumber, TableDTO);
 
         // Assert
-        assertEquals(400, response.getStatusCode().value());
+        assertEquals(404, response.getStatusCode().value());
         verify(repo, never()).save(any(TableModel.class));
+    }
+
+    @Test
+    void updateTable_shouldReturn500_whenFailsToGetTable()
+    {
+        // Arrange
+        String oldTableNumber = "T01";
+        TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
+        TableModel expected = new TableModel("T02", 4, TableStatus.Active);
+        TableDTO TableDTO = new TableDTO(expected);
+
+        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
+                .thenThrow(new RuntimeException());
+
+        // Act
+        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO);
+
+        // Assert
+        assertEquals(500, response.getStatusCode().value());
     }
 
     @Test
@@ -119,7 +138,7 @@ class UpdateTableTest
                 .thenReturn(Optional.of(existing));
 
         // Act
-        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO.tableNumber(), TableDTO.capacity(), TableDTO.status());
+        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO);
 
         // Assert
         assertEquals(400, response.getStatusCode().value());
@@ -133,7 +152,6 @@ class UpdateTableTest
         TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
         TableModel expected = new TableModel("T02", 4, TableStatus.Active);
         TableDTO TableDTO = new TableDTO(expected);
-        ArgumentCaptor<TableModel> captor = ArgumentCaptor.forClass(TableModel.class);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
                 .thenReturn(Optional.empty());
@@ -145,7 +163,7 @@ class UpdateTableTest
                 .thenThrow(new RuntimeException());
 
         // Act
-        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO.tableNumber(), TableDTO.capacity(), TableDTO.status());
+        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO);
 
         // Assert
         assertEquals(500, response.getStatusCode().value());

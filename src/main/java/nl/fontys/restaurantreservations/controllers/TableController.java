@@ -1,5 +1,6 @@
 package nl.fontys.restaurantreservations.controllers;
 
+import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.dtos.requests.table.CreateTableRequest;
 import nl.fontys.restaurantreservations.dtos.requests.table.DeleteTableRequest;
 import nl.fontys.restaurantreservations.dtos.requests.table.UpdateTableRequest;
@@ -34,13 +35,15 @@ public class TableController
     @PostMapping
     public ResponseEntity<?> createTable(@RequestBody CreateTableRequest request)
     {
-        return tableService.createTable(request.tableNumber(), request.capacity(), request.status());
+        TableDTO dto = new TableDTO(request.tableNumber(), request.capacity(), request.status());
+        return tableService.createTable(dto);
     }
 
     @PutMapping
     public ResponseEntity<?> updateTable(@RequestBody UpdateTableRequest request)
     {
-        return tableService.updateTable(request.oldTableNumber(), request.newTableNumber(), request.capacity(), request.status());
+        TableDTO dto = new TableDTO(request.newTableNumber(), request.capacity(), request.status());
+        return tableService.updateTable(request.oldTableNumber(), dto);
     }
 
     @DeleteMapping

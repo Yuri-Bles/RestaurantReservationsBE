@@ -2,6 +2,7 @@ package nl.fontys.restaurantreservations.services;
 
 import nl.fontys.restaurantreservations.dtos.*;
 import nl.fontys.restaurantreservations.enums.TableStatus;
+import nl.fontys.restaurantreservations.exceptions.TableNotFoundException;
 import nl.fontys.restaurantreservations.interfaces.ITableRepository;
 import nl.fontys.restaurantreservations.models.TableModel;
 import org.springframework.http.ResponseEntity;
@@ -55,43 +56,51 @@ public class TableService
         return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", tables);
     }
 
-    public ResponseEntity<?> createTable(String tableNumber, Integer capacity, TableStatus status)
+    public ResponseEntity<?> createTable(TableDTO dto)
     {
-        if (tableNumber.isBlank() || !isTableNumberAvailable(tableNumber))
+        if (dto.tableNumber().isBlank() || !isTableNumberAvailable(dto.tableNumber()))
         {
             return ResponseEntityCreator.returnResponseEntity(400, "Table number is not valid.");
         }
 
-        if (capacity <= 0)
+        if (dto.capacity() <= 0)
         {
             return ResponseEntityCreator.returnResponseEntity(400, "Table capacity must be above 0.");
         }
 
-        TableModel model = new TableModel(tableNumber, capacity, status);
-        repo.save(model);
+        TableModel model = new TableModel(dto.tableNumber(), dto.capacity(), dto.status());
+
+        try {
+            repo.save(model);
+        }
+        catch (Exception ex) {
+            return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong internally.");
+        }
         return ResponseEntityCreator.returnResponseEntity(201, "Table successfully created.");
     }
 
-    public ResponseEntity<?> updateTable(String oldTableNumber, String newTableNumber, Integer capacity, TableStatus status)
+    public ResponseEntity<?> updateTable(String oldTableNumber, TableDTO dto)
     {
         TableModel model;
 
         try
         { model = getTableByTableNumber(oldTableNumber); }
+        catch (TableNotFoundException ex)
+        { return ResponseEntityCreator.returnResponseEntity(404, "Table doesn't exist"); }
         catch (Exception ex)
-        { return ResponseEntityCreator.returnResponseEntity(400, "Table doesn't exist"); }
+        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Please try again later. " + ex); }
 
-        if (newTableNumber.isBlank())
+        if (dto.tableNumber().isBlank())
         { return ResponseEntityCreator.returnResponseEntity(400, "Table number is not valid."); }
 
-        if (capacity <= 0)
+        if (dto.capacity() <= 0)
         {
             return ResponseEntityCreator.returnResponseEntity(400, "Table capacity must be above 0.");
         }
 
-        model.setTableNumber(newTableNumber);
-        model.setCapacity(capacity);
-        model.setStatus(status);
+        model.setTableNumber(dto.tableNumber());
+        model.setCapacity(dto.capacity());
+        model.setStatus(dto.status());
 
         try
         { repo.save(model); }
@@ -106,8 +115,10 @@ public class TableService
         TableModel model;
         try
         { model = getTableByTableNumber(tableNumber); }
+        catch (TableNotFoundException ex)
+        { return ResponseEntityCreator.returnResponseEntity(404, "Table does not exist."); }
         catch (Exception ex)
-        { return ResponseEntityCreator.returnResponseEntity(400, "Table does not exist."); }
+        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later. " + ex); }
 
         model.setStatus(TableStatus.Removed);
 
@@ -129,6 +140,8 @@ public class TableService
     private TableModel getTableByTableNumber(String tableNumber)
     {
         return repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active).or(() ->
-                repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive)).orElseThrow();
+                repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive)).orElseThrow(() ->
+                new TableNotFoundException("Table doesn't exist")
+        );
     }
 }

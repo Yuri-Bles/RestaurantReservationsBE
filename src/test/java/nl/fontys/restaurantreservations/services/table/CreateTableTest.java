@@ -45,7 +45,7 @@ class CreateTableTest
                 .thenReturn(Optional.empty());
 
         // Act
-        service.createTable(newTableDTO.tableNumber(), newTableDTO.capacity(), newTableDTO.status());
+        service.createTable(newTableDTO);
 
         // Assert
         verify(repo).save(captor.capture());
@@ -65,11 +65,7 @@ class CreateTableTest
         TableDTO newTableDTO = new TableDTO(newTableModel);
 
         // Act
-        ResponseEntity<?> response = service.createTable(
-                newTableDTO.tableNumber(),
-                newTableDTO.capacity(),
-                newTableDTO.status()
-        );
+        ResponseEntity<?> response = service.createTable(newTableDTO);
 
         // Assert
         assertEquals(400, response.getStatusCode().value());
@@ -84,11 +80,7 @@ class CreateTableTest
         when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active)).thenReturn(Optional.of(newTableModel));
 
         // Act
-        ResponseEntity<?> response = service.createTable(
-                newTableDTO.tableNumber(),
-                newTableDTO.capacity(),
-                newTableDTO.status()
-        );
+        ResponseEntity<?> response = service.createTable(newTableDTO);
 
         // Assert
         assertEquals(400, response.getStatusCode().value());
@@ -100,17 +92,32 @@ class CreateTableTest
         // Arrange
         TableModel newTableModel = new TableModel("T01", -4, TableStatus.Active);
         TableDTO newTableDTO = new TableDTO(newTableModel);
-        when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active)).thenReturn(Optional.of(newTableModel));
+        when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active))
+                .thenReturn(Optional.empty());
 
         // Act
-        ResponseEntity<?> response = service.createTable(
-                newTableDTO.tableNumber(),
-                newTableDTO.capacity(),
-                newTableDTO.status()
-        );
+        ResponseEntity<?> response = service.createTable(newTableDTO);
 
         // Assert
         assertEquals(400, response.getStatusCode().value());
     }
 
+    @Test
+    void createTable_shouldReturn500_whenSavingModelFails()
+    {
+        // Arrange
+        TableModel newTableModel = new TableModel("T01", 4, TableStatus.Active);
+        TableDTO newTableDTO = new TableDTO(newTableModel);
+
+        when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active))
+                .thenReturn(Optional.empty());
+        when(repo.save(any(TableModel.class)))
+                .thenThrow(new RuntimeException());
+
+        // Act
+        ResponseEntity<?> response = service.createTable(newTableDTO);
+
+        // Assert
+        assertEquals(500, response.getStatusCode().value());
+    }
 }

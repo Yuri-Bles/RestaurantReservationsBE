@@ -60,7 +60,7 @@ class DeleteTableTest
     }
 
     @Test
-    void deleteTable_shouldReturn400_whenTableNumberIsInvalid()
+    void deleteTable_shouldReturn404_whenTableNumberIsInvalid()
     {
         // Arrange
         TableModel existing = new TableModel("T02", 4, TableStatus.Inactive);
@@ -78,7 +78,26 @@ class DeleteTableTest
         ResponseEntity<?> response = service.deleteTable(TableDTO.tableNumber());
 
         // Assert
-        assertEquals(400, response.getStatusCode().value());
+        assertEquals(404, response.getStatusCode().value());
+    }
+
+    @Test
+    void deleteTable_shouldReturn500_whenFailsToGetModel()
+    {
+        // Arrange
+        TableModel existing = new TableModel("T02", 4, TableStatus.Inactive);
+        TableModel expected = new TableModel("T02", 4, TableStatus.Removed);
+        TableDTO TableDTO = new TableDTO(expected);
+        ArgumentCaptor<TableModel> captor = ArgumentCaptor.forClass(TableModel.class);
+
+        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
+                .thenThrow(new RuntimeException());
+
+        // Act
+        ResponseEntity<?> response = service.deleteTable(TableDTO.tableNumber());
+
+        // Assert
+        assertEquals(500, response.getStatusCode().value());
     }
 
     @Test
