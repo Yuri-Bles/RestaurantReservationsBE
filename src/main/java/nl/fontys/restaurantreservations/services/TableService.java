@@ -115,8 +115,10 @@ public class TableService
         TableModel model;
         try
         { model = getTableByTableNumber(tableNumber); }
+        catch (TableNotFoundException ex)
+        { return ResponseEntityCreator.returnResponseEntity(404, "Table does not exist."); }
         catch (Exception ex)
-        { return ResponseEntityCreator.returnResponseEntity(400, "Table does not exist."); }
+        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later. " + ex); }
 
         model.setStatus(TableStatus.Removed);
 
