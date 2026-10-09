@@ -2,6 +2,7 @@ package nl.fontys.restaurantreservations.services;
 
 import nl.fontys.restaurantreservations.dtos.*;
 import nl.fontys.restaurantreservations.enums.TableStatus;
+import nl.fontys.restaurantreservations.exceptions.TableNotFoundException;
 import nl.fontys.restaurantreservations.interfaces.ITableRepository;
 import nl.fontys.restaurantreservations.models.TableModel;
 import org.springframework.http.ResponseEntity;
@@ -84,8 +85,10 @@ public class TableService
 
         try
         { model = getTableByTableNumber(oldTableNumber); }
+        catch (TableNotFoundException ex)
+        { return ResponseEntityCreator.returnResponseEntity(404, "Table doesn't exist"); }
         catch (Exception ex)
-        { return ResponseEntityCreator.returnResponseEntity(400, "Table doesn't exist"); }
+        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Please try again later. " + ex); }
 
         if (dto.tableNumber().isBlank())
         { return ResponseEntityCreator.returnResponseEntity(400, "Table number is not valid."); }
@@ -135,6 +138,8 @@ public class TableService
     private TableModel getTableByTableNumber(String tableNumber)
     {
         return repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active).or(() ->
-                repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive)).orElseThrow();
+                repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive)).orElseThrow(() ->
+                new TableNotFoundException("Table doesn't exist")
+        );
     }
 }

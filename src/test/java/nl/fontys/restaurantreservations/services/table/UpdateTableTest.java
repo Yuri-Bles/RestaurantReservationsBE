@@ -83,7 +83,7 @@ class UpdateTableTest
     }
 
     @Test
-    void updateTable_shouldReturn400_whenTableDoesNotExist()
+    void updateTable_shouldReturn404_whenTableDoesNotExist()
     {
         // Arrange
         TableDTO TableDTO = new TableDTO("T02", 4, TableStatus.Active);
@@ -99,8 +99,27 @@ class UpdateTableTest
         ResponseEntity<?> response = service.updateTable(tableNumber, TableDTO);
 
         // Assert
-        assertEquals(400, response.getStatusCode().value());
+        assertEquals(404, response.getStatusCode().value());
         verify(repo, never()).save(any(TableModel.class));
+    }
+
+    @Test
+    void updateTable_shouldReturn500_whenFailsToGetTable()
+    {
+        // Arrange
+        String oldTableNumber = "T01";
+        TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
+        TableModel expected = new TableModel("T02", 4, TableStatus.Active);
+        TableDTO TableDTO = new TableDTO(expected);
+
+        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
+                .thenThrow(new RuntimeException());
+
+        // Act
+        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO);
+
+        // Assert
+        assertEquals(500, response.getStatusCode().value());
     }
 
     @Test
