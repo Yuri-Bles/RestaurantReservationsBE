@@ -78,7 +78,7 @@ public class TableService
         return ResponseEntityCreator.returnResponseEntity(201, "Table successfully created.");
     }
 
-    public ResponseEntity<?> updateTable(String oldTableNumber, String newTableNumber, Integer capacity, TableStatus status)
+    public ResponseEntity<?> updateTable(String oldTableNumber, TableDTO dto)
     {
         TableModel model;
 
@@ -87,17 +87,17 @@ public class TableService
         catch (Exception ex)
         { return ResponseEntityCreator.returnResponseEntity(400, "Table doesn't exist"); }
 
-        if (newTableNumber.isBlank())
+        if (dto.tableNumber().isBlank())
         { return ResponseEntityCreator.returnResponseEntity(400, "Table number is not valid."); }
 
-        if (capacity <= 0)
+        if (dto.capacity() <= 0)
         {
             return ResponseEntityCreator.returnResponseEntity(400, "Table capacity must be above 0.");
         }
 
-        model.setTableNumber(newTableNumber);
-        model.setCapacity(capacity);
-        model.setStatus(status);
+        model.setTableNumber(dto.tableNumber());
+        model.setCapacity(dto.capacity());
+        model.setStatus(dto.status());
 
         try
         { repo.save(model); }
