@@ -8,6 +8,7 @@ import nl.fontys.restaurantreservations.interfaces.TableRepository;
 import nl.fontys.restaurantreservations.mappers.table.TableDomainEntityMapper;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TableRepositoryImpl implements TableRepository {
     private final JPATableRepository jpaRepository;
@@ -27,5 +28,11 @@ public class TableRepositoryImpl implements TableRepository {
                 .stream()
                 .map(mapper::toDomain)
                 .toList();
+    }
+
+    public Optional<TableDomain> findByTableNumberAndStatus(String tableNumber, TableStatus status)
+    {
+        return jpaRepository.findByTableNumberAndStatus(tableNumber, status)
+                .map(mapper::toDomain);
     }
 }
