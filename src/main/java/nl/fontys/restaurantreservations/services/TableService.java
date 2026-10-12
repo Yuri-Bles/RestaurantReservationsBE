@@ -43,20 +43,21 @@ public class TableService
 
     public ResponseEntity<?> getAllExistingTables()
     {
-        List<TableDTO> tables = Stream.concat(
-                        repo.findAllByStatus(TableStatus.Active).stream(),
-                        repo.findAllByStatus(TableStatus.Inactive).stream())
-                .map(TableDTO::new)
+        List<TableDomain> tables = Stream.concat(
+                        repo2.findAllByStatus(TableStatus.Active).stream(),
+                        repo2.findAllByStatus(TableStatus.Inactive).stream())
                 .sorted(
-                        Comparator.comparing(TableDTO::status)
-                                .thenComparing(TableDTO::tableNumber)
+                        Comparator.comparing(TableDomain::getStatus)
+                                .thenComparing(TableDomain::getTableNumber)
                 )
                 .toList();
 
         if (tables.isEmpty())
         { return ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables"); }
 
-        return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", tables);
+        List<TableDTO> dtos = mapper.listToDTO(tables);
+
+        return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", dtos);
     }
 
     public ResponseEntity<?> createTable(TableDTO dto)
