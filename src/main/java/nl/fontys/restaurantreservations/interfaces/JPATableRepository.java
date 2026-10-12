@@ -10,5 +10,7 @@ public interface JPATableRepository extends JpaRepository<TableEntity, Long>
 {
     List<TableEntity> findAllByStatus(TableStatus status);
 
+    TableEntity save(TableEntity table);
+
     Optional<TableEntity> findByTableNumberAndStatus(String tableNumber, TableStatus status);
 }

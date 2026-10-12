@@ -2,6 +2,7 @@ package nl.fontys.restaurantreservations.repositories;
 
 import jakarta.persistence.Table;
 import nl.fontys.restaurantreservations.domain.TableDomain;
+import nl.fontys.restaurantreservations.entities.TableEntity;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.interfaces.JPATableRepository;
 import nl.fontys.restaurantreservations.interfaces.TableRepository;
@@ -28,6 +29,11 @@ public class TableRepositoryImpl implements TableRepository {
                 .stream()
                 .map(mapper::toDomain)
                 .toList();
+    }
+
+    public void save(TableDomain domain) {
+        TableEntity entity = mapper.toEntity(domain);
+        jpaRepository.save(entity);
     }
 
     public Optional<TableDomain> findByTableNumberAndStatus(String tableNumber, TableStatus status)
