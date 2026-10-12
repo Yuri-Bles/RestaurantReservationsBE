@@ -4,7 +4,7 @@ import nl.fontys.restaurantreservations.domain.TableDomain;
 import nl.fontys.restaurantreservations.entities.TableEntity;
 
 public class TableDomainEntityMapper {
-    public static TableDomain toDomain(TableEntity entity) {
+    public TableDomain toDomain(TableEntity entity) {
         return new TableDomain(
                 entity.getId(),
                 entity.getTableNumber(),
@@ -13,7 +13,7 @@ public class TableDomainEntityMapper {
         );
     }
 
-    public static TableEntity toEntity(TableDomain domain) {
+    public TableEntity toEntity(TableDomain domain) {
         TableEntity entity = new TableEntity();
 
         entity.setId(domain.getId());

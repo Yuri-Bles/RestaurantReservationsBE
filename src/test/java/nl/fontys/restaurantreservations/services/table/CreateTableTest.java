@@ -2,7 +2,7 @@ package nl.fontys.restaurantreservations.services.table;
 
 import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.enums.TableStatus;
-import nl.fontys.restaurantreservations.interfaces.ITableRepository;
+import nl.fontys.restaurantreservations.interfaces.JPATableRepository;
 import nl.fontys.restaurantreservations.entities.TableEntity;
 import nl.fontys.restaurantreservations.services.TableService;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 class CreateTableTest
 {
     @Mock
-    private ITableRepository repo;
+    private JPATableRepository repo;
 
     @InjectMocks
     private TableService service;

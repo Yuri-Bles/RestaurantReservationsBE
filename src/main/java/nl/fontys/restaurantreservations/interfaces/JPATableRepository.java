@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.*;
 
-public interface ITableRepository extends JpaRepository<TableEntity, Long>
+public interface JPATableRepository extends JpaRepository<TableEntity, Long>
 {
     List<TableEntity> findAllByStatus(TableStatus status);
 

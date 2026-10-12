@@ -1,12 +1,14 @@
 package nl.fontys.restaurantreservations.services;
 
+import nl.fontys.restaurantreservations.domain.TableDomain;
 import nl.fontys.restaurantreservations.dtos.*;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.exceptions.TableNotFoundException;
-import nl.fontys.restaurantreservations.interfaces.ITableRepository;
+import nl.fontys.restaurantreservations.interfaces.JPATableRepository;
 import nl.fontys.restaurantreservations.entities.TableEntity;
-import nl.fontys.restaurantreservations.mappers.table.*;
+import nl.fontys.restaurantreservations.mappers.table.TableDomainDTOMapper;
 
+import nl.fontys.restaurantreservations.repositories.TableRepositoryImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,28 +18,27 @@ import java.util.stream.Stream;
 @Service
 public class TableService
 {
-    private final ITableRepository repo;
+    private final JPATableRepository repo;
+    private final TableRepositoryImpl repo2;
 
-    public TableService(ITableRepository repo)
+    private final TableDomainDTOMapper mapper = new TableDomainDTOMapper();
+
+    public TableService(JPATableRepository repo, TableRepositoryImpl repo2)
     {
         this.repo = repo;
+        this.repo2 = repo2;
     }
 
     public ResponseEntity<?> getAllActiveTables()
     {
-        List<TableDTO> tables = repo.findAllByStatus(TableStatus.Active)
-                .stream()
-                .map(TableDTO::new)
-                .sorted(
-                        Comparator.comparing(TableDTO::status)
-                                .thenComparing(TableDTO::tableNumber)
-                )
-                .toList();
+        List<TableDomain> tables = repo2.findAllByStatus(TableStatus.Active);
 
         if (tables.isEmpty())
         { return ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables"); }
 
-        return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", tables);
+        List<TableDTO> dtos = mapper.listToDTO(tables);
+
+        return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", dtos);
     }
 
     public ResponseEntity<?> getAllExistingTables()
