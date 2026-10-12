@@ -4,8 +4,6 @@ import nl.fontys.restaurantreservations.domain.TableDomain;
 import nl.fontys.restaurantreservations.dtos.*;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.exceptions.TableNotFoundException;
-import nl.fontys.restaurantreservations.interfaces.JPATableRepository;
-import nl.fontys.restaurantreservations.entities.TableEntity;
 import nl.fontys.restaurantreservations.mappers.table.TableDomainDTOMapper;
 
 import nl.fontys.restaurantreservations.repositories.TableRepositoryImpl;
@@ -18,20 +16,18 @@ import java.util.stream.Stream;
 @Service
 public class TableService
 {
-    private final JPATableRepository repo;
-    private final TableRepositoryImpl repo2;
+    private final TableRepositoryImpl repo;
 
     private final TableDomainDTOMapper mapper = new TableDomainDTOMapper();
 
-    public TableService(JPATableRepository repo, TableRepositoryImpl repo2)
+    public TableService(TableRepositoryImpl repo)
     {
         this.repo = repo;
-        this.repo2 = repo2;
     }
 
     public ResponseEntity<?> getAllActiveTables()
     {
-        List<TableDomain> tables = repo2.findAllByStatus(TableStatus.Active);
+        List<TableDomain> tables = repo.findAllByStatus(TableStatus.Active);
 
         if (tables.isEmpty())
         { return ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables"); }
@@ -44,8 +40,8 @@ public class TableService
     public ResponseEntity<?> getAllExistingTables()
     {
         List<TableDomain> tables = Stream.concat(
-                        repo2.findAllByStatus(TableStatus.Active).stream(),
-                        repo2.findAllByStatus(TableStatus.Inactive).stream())
+                        repo.findAllByStatus(TableStatus.Active).stream(),
+                        repo.findAllByStatus(TableStatus.Inactive).stream())
                 .sorted(
                         Comparator.comparing(TableDomain::getStatus)
                                 .thenComparing(TableDomain::getTableNumber)
@@ -75,7 +71,7 @@ public class TableService
         }
 
         try {
-            repo2.save(domain);
+            repo.save(domain);
         }
         catch (Exception ex) {
             return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong internally.");
@@ -107,7 +103,7 @@ public class TableService
         domain.setStatus(dto.status());
 
         try
-        { repo2.save(domain); }
+        { repo.save(domain); }
         catch (Exception ex)
         { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later. " + ex); }
 
@@ -127,7 +123,7 @@ public class TableService
         domain.setStatus(TableStatus.Removed);
 
         try
-        { repo2.save(domain); }
+        { repo.save(domain); }
         catch (Exception ex)
         { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later."); }
 
@@ -136,15 +132,15 @@ public class TableService
 
     private boolean isTableNumberAvailable(String tableNumber)
     {
-        Optional<TableDomain> activeResult = repo2.findByTableNumberAndStatus(tableNumber, TableStatus.Active);
-        Optional<TableDomain> inactiveResult = repo2.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive);
+        Optional<TableDomain> activeResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active);
+        Optional<TableDomain> inactiveResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive);
         return (activeResult.isEmpty() && inactiveResult.isEmpty());
     }
 
     private TableDomain getTableByTableNumber(String tableNumber)
     {
-        return repo2.findByTableNumberAndStatus(tableNumber, TableStatus.Active).or(() ->
-                repo2.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive)).orElseThrow(() ->
+        return repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active).or(() ->
+                repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive)).orElseThrow(() ->
                 new TableNotFoundException("Table doesn't exist")
         );
     }
