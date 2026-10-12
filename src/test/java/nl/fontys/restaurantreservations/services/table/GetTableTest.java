@@ -1,22 +1,19 @@
 package nl.fontys.restaurantreservations.services.table;
 
-import nl.fontys.restaurantreservations.dtos.ApiMessage;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.interfaces.ITableRepository;
-import nl.fontys.restaurantreservations.models.TableModel;
+import nl.fontys.restaurantreservations.models.TableEntity;
 import nl.fontys.restaurantreservations.services.ResponseEntityCreator;
 import nl.fontys.restaurantreservations.services.TableService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,12 +33,12 @@ class GetTableTest
     void getAllActiveTables_shouldReturnActiveTables()
     {
         // Arrange
-        TableModel tableModel1 = new TableModel("T01", 4, TableStatus.Active);
-        TableModel tableModel2 = new TableModel("T02", 6, TableStatus.Active);
-        TableModel tableModel3 = new TableModel("T03", 6, TableStatus.Active);
-        TableDTO table1 = new TableDTO(tableModel1);
-        TableDTO table2 = new TableDTO(tableModel2);
-        TableDTO table3 = new TableDTO(tableModel3);
+        TableEntity tableEntity1 = new TableEntity("T01", 4, TableStatus.Active);
+        TableEntity tableEntity2 = new TableEntity("T02", 6, TableStatus.Active);
+        TableEntity tableEntity3 = new TableEntity("T03", 6, TableStatus.Active);
+        TableDTO table1 = new TableDTO(tableEntity1);
+        TableDTO table2 = new TableDTO(tableEntity2);
+        TableDTO table3 = new TableDTO(tableEntity3);
 
         List<TableDTO> dtoList = List.of(table1, table2, table3);
         ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(
@@ -49,7 +46,7 @@ class GetTableTest
                 "Got tables successfully",
                 dtoList);
 
-        List<TableModel> repoReturn = List.of(tableModel1, tableModel2, tableModel3);
+        List<TableEntity> repoReturn = List.of(tableEntity1, tableEntity2, tableEntity3);
 
         when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
 
@@ -64,17 +61,17 @@ class GetTableTest
     void getAllActiveTables_shouldReturn500_whenRepoDoesntReturnTables()
     {
         // Arrange
-        TableModel tableModel1 = new TableModel("T01", 4, TableStatus.Active);
-        TableModel tableModel2 = new TableModel("T02", 6, TableStatus.Active);
-        TableModel tableModel3 = new TableModel("T03", 6, TableStatus.Active);
-        TableDTO table1 = new TableDTO(tableModel1);
-        TableDTO table2 = new TableDTO(tableModel2);
-        TableDTO table3 = new TableDTO(tableModel3);
+        TableEntity tableEntity1 = new TableEntity("T01", 4, TableStatus.Active);
+        TableEntity tableEntity2 = new TableEntity("T02", 6, TableStatus.Active);
+        TableEntity tableEntity3 = new TableEntity("T03", 6, TableStatus.Active);
+        TableDTO table1 = new TableDTO(tableEntity1);
+        TableDTO table2 = new TableDTO(tableEntity2);
+        TableDTO table3 = new TableDTO(tableEntity3);
 
         List<TableDTO> dtoList = List.of(table1, table2, table3);
         ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables");
 
-        List<TableModel> repoReturn = List.of();
+        List<TableEntity> repoReturn = List.of();
 
         when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
 
@@ -89,12 +86,12 @@ class GetTableTest
     void getAllExistingTables_shouldReturnExistingTables()
     {
         // Arrange
-        TableModel tableModel1 = new TableModel("T01", 4, TableStatus.Active);
-        TableModel tableModel2 = new TableModel("T02", 6, TableStatus.Inactive);
-        TableModel tableModel3 = new TableModel("T03", 6, TableStatus.Inactive);
-        TableDTO table1 = new TableDTO(tableModel1);
-        TableDTO table2 = new TableDTO(tableModel2);
-        TableDTO table3 = new TableDTO(tableModel3);
+        TableEntity tableEntity1 = new TableEntity("T01", 4, TableStatus.Active);
+        TableEntity tableEntity2 = new TableEntity("T02", 6, TableStatus.Inactive);
+        TableEntity tableEntity3 = new TableEntity("T03", 6, TableStatus.Inactive);
+        TableDTO table1 = new TableDTO(tableEntity1);
+        TableDTO table2 = new TableDTO(tableEntity2);
+        TableDTO table3 = new TableDTO(tableEntity3);
 
         List<TableDTO> dtoList = List.of(table1, table2, table3);
         ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(
@@ -102,8 +99,8 @@ class GetTableTest
                 "Got tables successfully",
                 dtoList);
 
-        List<TableModel> repoReturnActive = List.of(tableModel1);
-        List<TableModel> repoReturnInactive = List.of(tableModel2, tableModel3);
+        List<TableEntity> repoReturnActive = List.of(tableEntity1);
+        List<TableEntity> repoReturnInactive = List.of(tableEntity2, tableEntity3);
 
         when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturnActive);
         when(repo.findAllByStatus(TableStatus.Inactive)).thenReturn(repoReturnInactive);
@@ -121,7 +118,7 @@ class GetTableTest
         // Arrange
         ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables");
 
-        List<TableModel> repoReturn = List.of();
+        List<TableEntity> repoReturn = List.of();
 
         when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
         when(repo.findAllByStatus(TableStatus.Inactive)).thenReturn(repoReturn);

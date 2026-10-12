@@ -3,7 +3,7 @@ package nl.fontys.restaurantreservations.services.table;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.interfaces.ITableRepository;
-import nl.fontys.restaurantreservations.models.TableModel;
+import nl.fontys.restaurantreservations.models.TableEntity;
 import nl.fontys.restaurantreservations.services.TableService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,10 +33,10 @@ class UpdateTableTest
     {
         // Arrange
         String oldTableNumber = "T01";
-        TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
-        TableModel expected = new TableModel("T02", 4, TableStatus.Active);
+        TableEntity existing = new TableEntity(oldTableNumber, 2, TableStatus.Inactive);
+        TableEntity expected = new TableEntity("T02", 4, TableStatus.Active);
         TableDTO TableDTO = new TableDTO(expected);
-        ArgumentCaptor<TableModel> captor = ArgumentCaptor.forClass(TableModel.class);
+        ArgumentCaptor<TableEntity> captor = ArgumentCaptor.forClass(TableEntity.class);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
                 .thenReturn(Optional.empty());
@@ -44,7 +44,7 @@ class UpdateTableTest
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
                 .thenReturn(Optional.of(existing));
 
-        when(repo.save(any(TableModel.class)))
+        when(repo.save(any(TableEntity.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
@@ -53,7 +53,7 @@ class UpdateTableTest
         // Assert
         verify(repo).save(captor.capture());
 
-        TableModel actual = captor.getValue();
+        TableEntity actual = captor.getValue();
 
         assertEquals(expected.getTableNumber(), actual.getTableNumber());
         assertEquals(expected.getCapacity(), actual.getCapacity());
@@ -65,8 +65,8 @@ class UpdateTableTest
     {
         // Arrange
         String oldTableNumber = "T01";
-        TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
-        TableModel expected = new TableModel(" ", 4, TableStatus.Active);
+        TableEntity existing = new TableEntity(oldTableNumber, 2, TableStatus.Inactive);
+        TableEntity expected = new TableEntity(" ", 4, TableStatus.Active);
         TableDTO TableDTO = new TableDTO(expected);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
@@ -100,7 +100,7 @@ class UpdateTableTest
 
         // Assert
         assertEquals(404, response.getStatusCode().value());
-        verify(repo, never()).save(any(TableModel.class));
+        verify(repo, never()).save(any(TableEntity.class));
     }
 
     @Test
@@ -108,8 +108,8 @@ class UpdateTableTest
     {
         // Arrange
         String oldTableNumber = "T01";
-        TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
-        TableModel expected = new TableModel("T02", 4, TableStatus.Active);
+        TableEntity existing = new TableEntity(oldTableNumber, 2, TableStatus.Inactive);
+        TableEntity expected = new TableEntity("T02", 4, TableStatus.Active);
         TableDTO TableDTO = new TableDTO(expected);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
@@ -127,8 +127,8 @@ class UpdateTableTest
     {
         // Arrange
         String oldTableNumber = "T01";
-        TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
-        TableModel expected = new TableModel("T02", -4, TableStatus.Active);
+        TableEntity existing = new TableEntity(oldTableNumber, 2, TableStatus.Inactive);
+        TableEntity expected = new TableEntity("T02", -4, TableStatus.Active);
         TableDTO TableDTO = new TableDTO(expected);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
@@ -149,8 +149,8 @@ class UpdateTableTest
     {
         // Arrange
         String oldTableNumber = "T01";
-        TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
-        TableModel expected = new TableModel("T02", 4, TableStatus.Active);
+        TableEntity existing = new TableEntity(oldTableNumber, 2, TableStatus.Inactive);
+        TableEntity expected = new TableEntity("T02", 4, TableStatus.Active);
         TableDTO TableDTO = new TableDTO(expected);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
@@ -159,7 +159,7 @@ class UpdateTableTest
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
                 .thenReturn(Optional.of(existing));
 
-        when(repo.save(any(TableModel.class)))
+        when(repo.save(any(TableEntity.class)))
                 .thenThrow(new RuntimeException());
 
         // Act
@@ -167,6 +167,6 @@ class UpdateTableTest
 
         // Assert
         assertEquals(500, response.getStatusCode().value());
-        verify(repo).save(any(TableModel.class));
+        verify(repo).save(any(TableEntity.class));
     }
 }

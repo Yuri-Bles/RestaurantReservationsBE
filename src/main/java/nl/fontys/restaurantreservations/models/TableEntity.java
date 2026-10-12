@@ -5,7 +5,7 @@ import nl.fontys.restaurantreservations.enums.TableStatus;
 
 @Entity
 @Table(name = "tables")
-public class TableModel {
+public class TableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,17 +19,17 @@ public class TableModel {
     @Enumerated(EnumType.STRING)
     private TableStatus status;
 
-    protected TableModel() {
+    protected TableEntity() {
     }
 
-    public TableModel(String tableNumber, Integer capacity, TableStatus status)
+    public TableEntity(String tableNumber, Integer capacity, TableStatus status)
     {
         this.tableNumber = tableNumber;
         this.capacity = capacity;
         this.status = status;
     }
 
-    public TableModel(String tableNumber, Integer capacity, String status)
+    public TableEntity(String tableNumber, Integer capacity, String status)
     {
         this.tableNumber = tableNumber;
         this.capacity = capacity;

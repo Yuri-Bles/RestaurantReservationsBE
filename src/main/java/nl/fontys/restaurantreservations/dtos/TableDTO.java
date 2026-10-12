@@ -1,7 +1,7 @@
 package nl.fontys.restaurantreservations.dtos;
 
 import nl.fontys.restaurantreservations.enums.TableStatus;
-import nl.fontys.restaurantreservations.models.TableModel;
+import nl.fontys.restaurantreservations.models.TableEntity;
 
 public record TableDTO(
         Long id,
@@ -9,7 +9,7 @@ public record TableDTO(
         Integer capacity,
         TableStatus status
 ) {
-    public TableDTO(TableModel table) {
+    public TableDTO(TableEntity table) {
         this(
                 table.getId(),
                 table.getTableNumber(),

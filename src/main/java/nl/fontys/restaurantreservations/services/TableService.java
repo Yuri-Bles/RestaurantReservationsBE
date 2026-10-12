@@ -4,7 +4,7 @@ import nl.fontys.restaurantreservations.dtos.*;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.exceptions.TableNotFoundException;
 import nl.fontys.restaurantreservations.interfaces.ITableRepository;
-import nl.fontys.restaurantreservations.models.TableModel;
+import nl.fontys.restaurantreservations.models.TableEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +68,7 @@ public class TableService
             return ResponseEntityCreator.returnResponseEntity(400, "Table capacity must be above 0.");
         }
 
-        TableModel model = new TableModel(dto.tableNumber(), dto.capacity(), dto.status());
+        TableEntity model = new TableEntity(dto.tableNumber(), dto.capacity(), dto.status());
 
         try {
             repo.save(model);
@@ -81,7 +81,7 @@ public class TableService
 
     public ResponseEntity<?> updateTable(String oldTableNumber, TableDTO dto)
     {
-        TableModel model;
+        TableEntity model;
 
         try
         { model = getTableByTableNumber(oldTableNumber); }
@@ -112,7 +112,7 @@ public class TableService
 
     public ResponseEntity<?> deleteTable(String tableNumber)
     {
-        TableModel model;
+        TableEntity model;
         try
         { model = getTableByTableNumber(tableNumber); }
         catch (TableNotFoundException ex)
@@ -132,12 +132,12 @@ public class TableService
 
     private boolean isTableNumberAvailable(String tableNumber)
     {
-        Optional<TableModel> activeResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active);
-        Optional<TableModel> inactiveResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive);
+        Optional<TableEntity> activeResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active);
+        Optional<TableEntity> inactiveResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive);
         return (activeResult.isEmpty() && inactiveResult.isEmpty());
     }
 
-    private TableModel getTableByTableNumber(String tableNumber)
+    private TableEntity getTableByTableNumber(String tableNumber)
     {
         return repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active).or(() ->
                 repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive)).orElseThrow(() ->

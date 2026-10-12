@@ -3,7 +3,7 @@ package nl.fontys.restaurantreservations.services.table;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.interfaces.ITableRepository;
-import nl.fontys.restaurantreservations.models.TableModel;
+import nl.fontys.restaurantreservations.models.TableEntity;
 import nl.fontys.restaurantreservations.services.TableService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,9 +33,9 @@ class CreateTableTest
     void createTable_shouldCreateTable_whenValuesAreCorrect()
     {
         // Arrange
-        TableModel expected = new TableModel("T01", 4, TableStatus.Active);
+        TableEntity expected = new TableEntity("T01", 4, TableStatus.Active);
         TableDTO newTableDTO = new TableDTO(expected);
-        ArgumentCaptor<TableModel> captor = ArgumentCaptor.forClass(TableModel.class);
+        ArgumentCaptor<TableEntity> captor = ArgumentCaptor.forClass(TableEntity.class);
 
         when(repo.findByTableNumberAndStatus("T01", TableStatus.Active))
                 .thenReturn(Optional.empty());
@@ -50,7 +49,7 @@ class CreateTableTest
         // Assert
         verify(repo).save(captor.capture());
 
-        TableModel actual = captor.getValue();
+        TableEntity actual = captor.getValue();
 
         assertEquals(expected.getTableNumber(), actual.getTableNumber());
         assertEquals(expected.getCapacity(), actual.getCapacity());
@@ -61,8 +60,8 @@ class CreateTableTest
     void createTable_shouldReturn400_whenTableNumberIsBlank()
     {
         // Arrange
-        TableModel newTableModel = new TableModel(" ", 4, TableStatus.Active);
-        TableDTO newTableDTO = new TableDTO(newTableModel);
+        TableEntity newTableEntity = new TableEntity(" ", 4, TableStatus.Active);
+        TableDTO newTableDTO = new TableDTO(newTableEntity);
 
         // Act
         ResponseEntity<?> response = service.createTable(newTableDTO);
@@ -75,9 +74,9 @@ class CreateTableTest
     void createTable_shouldReturn400_whenTableNumberIsDuplicate()
     {
         // Arrange
-        TableModel newTableModel = new TableModel("T01", 4, TableStatus.Active);
-        TableDTO newTableDTO = new TableDTO(newTableModel);
-        when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active)).thenReturn(Optional.of(newTableModel));
+        TableEntity newTableEntity = new TableEntity("T01", 4, TableStatus.Active);
+        TableDTO newTableDTO = new TableDTO(newTableEntity);
+        when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active)).thenReturn(Optional.of(newTableEntity));
 
         // Act
         ResponseEntity<?> response = service.createTable(newTableDTO);
@@ -90,8 +89,8 @@ class CreateTableTest
     void createTable_shouldReturn400_whenCapacityIsBelow1()
     {
         // Arrange
-        TableModel newTableModel = new TableModel("T01", -4, TableStatus.Active);
-        TableDTO newTableDTO = new TableDTO(newTableModel);
+        TableEntity newTableEntity = new TableEntity("T01", -4, TableStatus.Active);
+        TableDTO newTableDTO = new TableDTO(newTableEntity);
         when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active))
                 .thenReturn(Optional.empty());
 
@@ -106,12 +105,12 @@ class CreateTableTest
     void createTable_shouldReturn500_whenSavingModelFails()
     {
         // Arrange
-        TableModel newTableModel = new TableModel("T01", 4, TableStatus.Active);
-        TableDTO newTableDTO = new TableDTO(newTableModel);
+        TableEntity newTableEntity = new TableEntity("T01", 4, TableStatus.Active);
+        TableDTO newTableDTO = new TableDTO(newTableEntity);
 
         when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active))
                 .thenReturn(Optional.empty());
-        when(repo.save(any(TableModel.class)))
+        when(repo.save(any(TableEntity.class)))
                 .thenThrow(new RuntimeException());
 
         // Act

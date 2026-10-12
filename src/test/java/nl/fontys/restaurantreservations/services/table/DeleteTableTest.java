@@ -3,7 +3,7 @@ package nl.fontys.restaurantreservations.services.table;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.interfaces.ITableRepository;
-import nl.fontys.restaurantreservations.models.TableModel;
+import nl.fontys.restaurantreservations.models.TableEntity;
 import nl.fontys.restaurantreservations.services.TableService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,10 +32,10 @@ class DeleteTableTest
     void deleteTable_shouldRemoveTable_whenValuesAreValidAndTableExists()
     {
         // Arrange
-        TableModel existing = new TableModel("T02", 4, TableStatus.Inactive);
-        TableModel expected = new TableModel("T02", 4, TableStatus.Removed);
+        TableEntity existing = new TableEntity("T02", 4, TableStatus.Inactive);
+        TableEntity expected = new TableEntity("T02", 4, TableStatus.Removed);
         TableDTO TableDTO = new TableDTO(expected);
-        ArgumentCaptor<TableModel> captor = ArgumentCaptor.forClass(TableModel.class);
+        ArgumentCaptor<TableEntity> captor = ArgumentCaptor.forClass(TableEntity.class);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
                 .thenReturn(Optional.empty());
@@ -43,7 +43,7 @@ class DeleteTableTest
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
                 .thenReturn(Optional.of(existing));
 
-        when(repo.save(any(TableModel.class)))
+        when(repo.save(any(TableEntity.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
@@ -52,7 +52,7 @@ class DeleteTableTest
         // Assert
         verify(repo).save(captor.capture());
 
-        TableModel actual = captor.getValue();
+        TableEntity actual = captor.getValue();
 
         assertEquals(expected.getTableNumber(), actual.getTableNumber());
         assertEquals(expected.getCapacity(), actual.getCapacity());
@@ -63,10 +63,10 @@ class DeleteTableTest
     void deleteTable_shouldReturn404_whenTableNumberIsInvalid()
     {
         // Arrange
-        TableModel existing = new TableModel("T02", 4, TableStatus.Inactive);
-        TableModel expected = new TableModel("T02", 4, TableStatus.Removed);
+        TableEntity existing = new TableEntity("T02", 4, TableStatus.Inactive);
+        TableEntity expected = new TableEntity("T02", 4, TableStatus.Removed);
         TableDTO TableDTO = new TableDTO(expected);
-        ArgumentCaptor<TableModel> captor = ArgumentCaptor.forClass(TableModel.class);
+        ArgumentCaptor<TableEntity> captor = ArgumentCaptor.forClass(TableEntity.class);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
                 .thenReturn(Optional.empty());
@@ -85,10 +85,10 @@ class DeleteTableTest
     void deleteTable_shouldReturn500_whenFailsToGetModel()
     {
         // Arrange
-        TableModel existing = new TableModel("T02", 4, TableStatus.Inactive);
-        TableModel expected = new TableModel("T02", 4, TableStatus.Removed);
+        TableEntity existing = new TableEntity("T02", 4, TableStatus.Inactive);
+        TableEntity expected = new TableEntity("T02", 4, TableStatus.Removed);
         TableDTO TableDTO = new TableDTO(expected);
-        ArgumentCaptor<TableModel> captor = ArgumentCaptor.forClass(TableModel.class);
+        ArgumentCaptor<TableEntity> captor = ArgumentCaptor.forClass(TableEntity.class);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
                 .thenThrow(new RuntimeException());
@@ -104,10 +104,10 @@ class DeleteTableTest
     void deleteTable_shouldReturn500_whenModelFailsToUpdate()
     {
         // Arrange
-        TableModel existing = new TableModel("T02", 4, TableStatus.Inactive);
-        TableModel expected = new TableModel("T02", 4, TableStatus.Removed);
+        TableEntity existing = new TableEntity("T02", 4, TableStatus.Inactive);
+        TableEntity expected = new TableEntity("T02", 4, TableStatus.Removed);
         TableDTO TableDTO = new TableDTO(expected);
-        ArgumentCaptor<TableModel> captor = ArgumentCaptor.forClass(TableModel.class);
+        ArgumentCaptor<TableEntity> captor = ArgumentCaptor.forClass(TableEntity.class);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
                 .thenReturn(Optional.empty());
@@ -115,7 +115,7 @@ class DeleteTableTest
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
                 .thenReturn(Optional.of(existing));
 
-        when(repo.save(any(TableModel.class)))
+        when(repo.save(any(TableEntity.class)))
                 .thenThrow(new RuntimeException());
 
         // Act
@@ -123,6 +123,6 @@ class DeleteTableTest
 
         // Assert
         assertEquals(500, response.getStatusCode().value());
-        verify(repo).save(any(TableModel.class));
+        verify(repo).save(any(TableEntity.class));
     }
 }
