@@ -85,10 +85,10 @@ public class TableService
 
     public ResponseEntity<?> updateTable(String oldTableNumber, TableDTO dto)
     {
-        TableEntity model;
+        TableDomain domain;
 
         try
-        { model = getTableByTableNumber(oldTableNumber); }
+        { domain = getTableByTableNumber(oldTableNumber); }
         catch (TableNotFoundException ex)
         { return ResponseEntityCreator.returnResponseEntity(404, "Table doesn't exist"); }
         catch (Exception ex)
@@ -102,12 +102,12 @@ public class TableService
             return ResponseEntityCreator.returnResponseEntity(400, "Table capacity must be above 0.");
         }
 
-        model.setTableNumber(dto.tableNumber());
-        model.setCapacity(dto.capacity());
-        model.setStatus(dto.status());
+        domain.setTableNumber(dto.tableNumber());
+        domain.setCapacity(dto.capacity());
+        domain.setStatus(dto.status());
 
         try
-        { repo.save(model); }
+        { repo2.save(domain); }
         catch (Exception ex)
         { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later. " + ex); }
 
@@ -116,18 +116,18 @@ public class TableService
 
     public ResponseEntity<?> deleteTable(String tableNumber)
     {
-        TableEntity model;
+        TableDomain domain;
         try
-        { model = getTableByTableNumber(tableNumber); }
+        { domain = getTableByTableNumber(tableNumber); }
         catch (TableNotFoundException ex)
         { return ResponseEntityCreator.returnResponseEntity(404, "Table does not exist."); }
         catch (Exception ex)
         { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later. " + ex); }
 
-        model.setStatus(TableStatus.Removed);
+        domain.setStatus(TableStatus.Removed);
 
         try
-        { repo.save(model); }
+        { repo2.save(domain); }
         catch (Exception ex)
         { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later."); }
 
@@ -136,15 +136,15 @@ public class TableService
 
     private boolean isTableNumberAvailable(String tableNumber)
     {
-        Optional<TableEntity> activeResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active);
-        Optional<TableEntity> inactiveResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive);
+        Optional<TableDomain> activeResult = repo2.findByTableNumberAndStatus(tableNumber, TableStatus.Active);
+        Optional<TableDomain> inactiveResult = repo2.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive);
         return (activeResult.isEmpty() && inactiveResult.isEmpty());
     }
 
-    private TableEntity getTableByTableNumber(String tableNumber)
+    private TableDomain getTableByTableNumber(String tableNumber)
     {
-        return repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active).or(() ->
-                repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive)).orElseThrow(() ->
+        return repo2.findByTableNumberAndStatus(tableNumber, TableStatus.Active).or(() ->
+                repo2.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive)).orElseThrow(() ->
                 new TableNotFoundException("Table doesn't exist")
         );
     }
