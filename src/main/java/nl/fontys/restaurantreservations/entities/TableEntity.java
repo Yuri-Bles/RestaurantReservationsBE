@@ -1,4 +1,4 @@
-package nl.fontys.restaurantreservations.models;
+package nl.fontys.restaurantreservations.entities;
 
 import jakarta.persistence.*;
 import nl.fontys.restaurantreservations.enums.TableStatus;

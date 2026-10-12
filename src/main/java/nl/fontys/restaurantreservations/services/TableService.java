@@ -4,7 +4,7 @@ import nl.fontys.restaurantreservations.dtos.*;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.exceptions.TableNotFoundException;
 import nl.fontys.restaurantreservations.interfaces.ITableRepository;
-import nl.fontys.restaurantreservations.models.TableEntity;
+import nl.fontys.restaurantreservations.entities.TableEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

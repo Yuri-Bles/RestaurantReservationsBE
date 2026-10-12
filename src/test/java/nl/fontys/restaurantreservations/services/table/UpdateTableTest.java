@@ -3,7 +3,7 @@ package nl.fontys.restaurantreservations.services.table;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.interfaces.ITableRepository;
-import nl.fontys.restaurantreservations.models.TableEntity;
+import nl.fontys.restaurantreservations.entities.TableEntity;
 import nl.fontys.restaurantreservations.services.TableService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
