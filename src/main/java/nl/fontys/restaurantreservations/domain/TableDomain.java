@@ -17,6 +17,13 @@ public class TableDomain {
         this.status = status;
     }
 
+    public TableDomain(String tableNumber, Integer capacity, TableStatus status) {
+        this.id = null;
+        this.tableNumber = tableNumber;
+        this.capacity = capacity;
+        this.status = status;
+    }
+
     //Getters
     public Long getId() {
         return id;

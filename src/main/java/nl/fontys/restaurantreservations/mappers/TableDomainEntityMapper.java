@@ -1,0 +1,26 @@
+package nl.fontys.restaurantreservations.mappers;
+
+import nl.fontys.restaurantreservations.domain.TableDomain;
+import nl.fontys.restaurantreservations.entities.TableEntity;
+
+public class TableDomainEntityMapper {
+    public static TableDomain toDomain(TableEntity entity) {
+        return new TableDomain(
+                entity.getId(),
+                entity.getTableNumber(),
+                entity.getCapacity(),
+                entity.getStatus()
+        );
+    }
+
+    public static TableEntity toEntity(TableDomain domain) {
+        TableEntity entity = new TableEntity();
+
+        entity.setId(domain.getId());
+        entity.setTableNumber(domain.getTableNumber());
+        entity.setCapacity(domain.getCapacity());
+        entity.setStatus(domain.getStatus());
+
+        return entity;
+    }
+}

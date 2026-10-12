@@ -19,7 +19,7 @@ public class TableEntity {
     @Enumerated(EnumType.STRING)
     private TableStatus status;
 
-    protected TableEntity() {
+    public TableEntity() {
     }
 
     public TableEntity(String tableNumber, Integer capacity, TableStatus status)
@@ -54,6 +54,10 @@ public class TableEntity {
     }
 
     //Setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setTableNumber(String tableNumber) {
         this.tableNumber = tableNumber;
     }
