@@ -1,9 +1,11 @@
 package nl.fontys.restaurantreservations.services.table;
 
+import nl.fontys.restaurantreservations.domain.TableDomain;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.enums.TableStatus;
-import nl.fontys.restaurantreservations.interfaces.JPATableRepository;
 import nl.fontys.restaurantreservations.entities.TableEntity;
+import nl.fontys.restaurantreservations.repositories.TableRepositoryImpl;
+import nl.fontys.restaurantreservations.mappers.table.*;
 import nl.fontys.restaurantreservations.services.TableService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,17 +19,18 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CreateTableTest
 {
     @Mock
-    private JPATableRepository repo;
+    private TableRepositoryImpl repo;
 
     @InjectMocks
     private TableService service;
+
+    TableDomainDTOMapper mapper = new TableDomainDTOMapper();
 
     @Test
     void createTable_shouldCreateTable_whenValuesAreCorrect()
@@ -35,7 +38,7 @@ class CreateTableTest
         // Arrange
         TableEntity expected = new TableEntity("T01", 4, TableStatus.Active);
         TableDTO newTableDTO = new TableDTO(expected);
-        ArgumentCaptor<TableEntity> captor = ArgumentCaptor.forClass(TableEntity.class);
+        ArgumentCaptor<TableDomain> captor = ArgumentCaptor.forClass(TableDomain.class);
 
         when(repo.findByTableNumberAndStatus("T01", TableStatus.Active))
                 .thenReturn(Optional.empty());
@@ -49,7 +52,7 @@ class CreateTableTest
         // Assert
         verify(repo).save(captor.capture());
 
-        TableEntity actual = captor.getValue();
+        TableDomain actual = captor.getValue();
 
         assertEquals(expected.getTableNumber(), actual.getTableNumber());
         assertEquals(expected.getCapacity(), actual.getCapacity());
@@ -60,8 +63,8 @@ class CreateTableTest
     void createTable_shouldReturn400_whenTableNumberIsBlank()
     {
         // Arrange
-        TableEntity newTableEntity = new TableEntity(" ", 4, TableStatus.Active);
-        TableDTO newTableDTO = new TableDTO(newTableEntity);
+        TableDomain newTableDomain = new TableDomain(" ", 4, TableStatus.Active);
+        TableDTO newTableDTO = mapper.toDTO(newTableDomain);
 
         // Act
         ResponseEntity<?> response = service.createTable(newTableDTO);
@@ -74,9 +77,10 @@ class CreateTableTest
     void createTable_shouldReturn400_whenTableNumberIsDuplicate()
     {
         // Arrange
-        TableEntity newTableEntity = new TableEntity("T01", 4, TableStatus.Active);
-        TableDTO newTableDTO = new TableDTO(newTableEntity);
-        when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active)).thenReturn(Optional.of(newTableEntity));
+        TableDomain newTableDomain = new TableDomain("T01", 4, TableStatus.Active);
+        TableDTO newTableDTO = mapper.toDTO(newTableDomain);
+        when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active))
+                .thenReturn(Optional.of(newTableDomain));
 
         // Act
         ResponseEntity<?> response = service.createTable(newTableDTO);
@@ -89,8 +93,8 @@ class CreateTableTest
     void createTable_shouldReturn400_whenCapacityIsBelow1()
     {
         // Arrange
-        TableEntity newTableEntity = new TableEntity("T01", -4, TableStatus.Active);
-        TableDTO newTableDTO = new TableDTO(newTableEntity);
+        TableDomain newTableDomain = new TableDomain("T01", -4, TableStatus.Active);
+        TableDTO newTableDTO = mapper.toDTO(newTableDomain);
         when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active))
                 .thenReturn(Optional.empty());
 
@@ -105,13 +109,15 @@ class CreateTableTest
     void createTable_shouldReturn500_whenSavingModelFails()
     {
         // Arrange
-        TableEntity newTableEntity = new TableEntity("T01", 4, TableStatus.Active);
-        TableDTO newTableDTO = new TableDTO(newTableEntity);
+        TableDomain newTableDomain = new TableDomain("T01", 4, TableStatus.Active);
+        TableDTO newTableDTO = mapper.toDTO(newTableDomain);
 
         when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active))
                 .thenReturn(Optional.empty());
-        when(repo.save(any(TableEntity.class)))
-                .thenThrow(new RuntimeException());
+
+        doThrow(new RuntimeException())
+                .when(repo)
+                .save(any(TableDomain.class));
 
         // Act
         ResponseEntity<?> response = service.createTable(newTableDTO);
