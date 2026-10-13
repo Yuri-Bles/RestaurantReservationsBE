@@ -3,7 +3,6 @@ package nl.fontys.restaurantreservations.services.table;
 import nl.fontys.restaurantreservations.domain.TableDomain;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.enums.TableStatus;
-import nl.fontys.restaurantreservations.entities.TableEntity;
 import nl.fontys.restaurantreservations.repositories.TableRepositoryImpl;
 import nl.fontys.restaurantreservations.mappers.table.*;
 import nl.fontys.restaurantreservations.services.TableService;
@@ -36,8 +35,8 @@ class CreateTableTest
     void createTable_shouldCreateTable_whenValuesAreCorrect()
     {
         // Arrange
-        TableEntity expected = new TableEntity("T01", 4, TableStatus.Active);
-        TableDTO newTableDTO = new TableDTO(expected);
+        TableDomain expected = new TableDomain("T01", 4, TableStatus.Active);
+        TableDTO newTableDTO = mapper.toDTO(expected);
         ArgumentCaptor<TableDomain> captor = ArgumentCaptor.forClass(TableDomain.class);
 
         when(repo.findByTableNumberAndStatus("T01", TableStatus.Active))
