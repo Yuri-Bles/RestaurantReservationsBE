@@ -7,10 +7,12 @@ import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.interfaces.JPATableRepository;
 import nl.fontys.restaurantreservations.interfaces.TableRepository;
 import nl.fontys.restaurantreservations.mappers.table.TableDomainEntityMapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class TableRepositoryImpl implements TableRepository {
     private final JPATableRepository jpaRepository;
     private final TableDomainEntityMapper mapper;

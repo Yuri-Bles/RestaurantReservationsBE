@@ -2,10 +2,12 @@ package nl.fontys.restaurantreservations.mappers.table;
 
 import nl.fontys.restaurantreservations.domain.TableDomain;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
 
+@Component
 public class TableDomainDTOMapper {
     public TableDomain toDomain(TableDTO dto) {
         return new TableDomain(
