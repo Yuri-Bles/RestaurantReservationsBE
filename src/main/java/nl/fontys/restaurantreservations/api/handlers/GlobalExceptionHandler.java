@@ -1,6 +1,7 @@
 package nl.fontys.restaurantreservations.api.handlers;
 
 import nl.fontys.restaurantreservations.api.dtos.ApiMessage;
+
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

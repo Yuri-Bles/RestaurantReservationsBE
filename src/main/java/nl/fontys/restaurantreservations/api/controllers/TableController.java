@@ -1,11 +1,13 @@
 package nl.fontys.restaurantreservations.api.controllers;
 
 import jakarta.validation.Valid;
+
 import nl.fontys.restaurantreservations.api.dtos.TableDTO;
 import nl.fontys.restaurantreservations.api.dtos.requests.table.CreateTableRequest;
 import nl.fontys.restaurantreservations.api.dtos.requests.table.DeleteTableRequest;
 import nl.fontys.restaurantreservations.api.dtos.requests.table.UpdateTableRequest;
 import nl.fontys.restaurantreservations.bll.services.TableService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

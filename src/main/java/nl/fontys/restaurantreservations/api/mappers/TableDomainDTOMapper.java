@@ -1,7 +1,8 @@
 package nl.fontys.restaurantreservations.api.mappers;
 
-import nl.fontys.restaurantreservations.bll.domains.TableDomain;
 import nl.fontys.restaurantreservations.api.dtos.TableDTO;
+import nl.fontys.restaurantreservations.bll.domains.TableDomain;
+
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;

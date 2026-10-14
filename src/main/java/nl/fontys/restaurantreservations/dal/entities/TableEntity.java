@@ -1,6 +1,7 @@
 package nl.fontys.restaurantreservations.dal.entities;
 
 import jakarta.persistence.*;
+
 import nl.fontys.restaurantreservations.bll.enums.TableStatus;
 
 @Entity

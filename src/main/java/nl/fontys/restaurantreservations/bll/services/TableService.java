@@ -1,12 +1,12 @@
 package nl.fontys.restaurantreservations.bll.services;
 
 import nl.fontys.restaurantreservations.api.dtos.TableDTO;
+import nl.fontys.restaurantreservations.api.mappers.TableDomainDTOMapper;
 import nl.fontys.restaurantreservations.bll.domains.TableDomain;
 import nl.fontys.restaurantreservations.bll.enums.TableStatus;
 import nl.fontys.restaurantreservations.bll.exceptions.TableNotFoundException;
-import nl.fontys.restaurantreservations.api.mappers.TableDomainDTOMapper;
-
 import nl.fontys.restaurantreservations.dal.repositories.TableRepositoryImpl;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

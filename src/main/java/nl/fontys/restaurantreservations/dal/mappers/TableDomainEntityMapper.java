@@ -2,6 +2,7 @@ package nl.fontys.restaurantreservations.dal.mappers;
 
 import nl.fontys.restaurantreservations.bll.domains.TableDomain;
 import nl.fontys.restaurantreservations.dal.entities.TableEntity;
+
 import org.springframework.stereotype.Component;
 
 @Component
