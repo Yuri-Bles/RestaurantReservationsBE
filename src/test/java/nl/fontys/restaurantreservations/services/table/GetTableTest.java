@@ -1,12 +1,12 @@
 package nl.fontys.restaurantreservations.services.table;
 
-import nl.fontys.restaurantreservations.domains.TableDomain;
-import nl.fontys.restaurantreservations.dtos.TableDTO;
-import nl.fontys.restaurantreservations.enums.TableStatus;
-import nl.fontys.restaurantreservations.mappers.table.*;
-import nl.fontys.restaurantreservations.repositories.TableRepositoryImpl;
-import nl.fontys.restaurantreservations.services.ResponseEntityCreator;
-import nl.fontys.restaurantreservations.services.TableService;
+import nl.fontys.restaurantreservations.api.mappers.TableDomainDTOMapper;
+import nl.fontys.restaurantreservations.bll.domains.TableDomain;
+import nl.fontys.restaurantreservations.api.dtos.TableDTO;
+import nl.fontys.restaurantreservations.bll.enums.TableStatus;
+import nl.fontys.restaurantreservations.dal.repositories.TableRepositoryImpl;
+import nl.fontys.restaurantreservations.bll.services.ResponseEntityCreator;
+import nl.fontys.restaurantreservations.bll.services.TableService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

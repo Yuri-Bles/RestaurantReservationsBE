@@ -1,0 +1,72 @@
+package nl.fontys.restaurantreservations.dal.entities;
+
+import jakarta.persistence.*;
+import nl.fontys.restaurantreservations.bll.enums.TableStatus;
+
+@Entity
+@Table(name = "tables")
+public class TableEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "table_number")
+    private String tableNumber;
+
+    private Integer capacity;
+
+    @Enumerated(EnumType.STRING)
+    private TableStatus status;
+
+    public TableEntity() {
+    }
+
+    public TableEntity(String tableNumber, Integer capacity, TableStatus status)
+    {
+        this.tableNumber = tableNumber;
+        this.capacity = capacity;
+        this.status = status;
+    }
+
+    public TableEntity(String tableNumber, Integer capacity, String status)
+    {
+        this.tableNumber = tableNumber;
+        this.capacity = capacity;
+        this.status = TableStatus.valueOf(status);
+    }
+
+    //Getters
+    public Long getId() {
+        return id;
+    }
+
+    public String getTableNumber() {
+        return tableNumber;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public TableStatus getStatus() {
+        return status;
+    }
+
+    //Setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTableNumber(String tableNumber) {
+        this.tableNumber = tableNumber;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+
+    public void setStatus(TableStatus status) {
+        this.status = status;
+    }
+}
