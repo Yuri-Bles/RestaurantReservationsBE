@@ -7,7 +7,9 @@ public class TableDomain {
     private final Long id;
 
     private String tableNumber;
+
     private Integer capacity;
+
     private TableStatus status;
 
     public TableDomain(Long id, String tableNumber, Integer capacity, TableStatus status) {

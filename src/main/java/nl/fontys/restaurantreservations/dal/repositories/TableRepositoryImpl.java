@@ -14,7 +14,9 @@ import java.util.Optional;
 
 @Repository
 public class TableRepositoryImpl implements TableRepository {
+
     private final JPATableRepository jpaRepository;
+
     private final TableDomainEntityMapper mapper;
 
     public TableRepositoryImpl(
