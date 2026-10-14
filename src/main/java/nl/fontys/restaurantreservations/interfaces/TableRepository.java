@@ -1,6 +1,6 @@
 package nl.fontys.restaurantreservations.interfaces;
 
-import nl.fontys.restaurantreservations.domain.TableDomain;
+import nl.fontys.restaurantreservations.domains.TableDomain;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 
 import java.util.List;

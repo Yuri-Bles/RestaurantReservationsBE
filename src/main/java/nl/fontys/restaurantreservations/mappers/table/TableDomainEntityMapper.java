@@ -1,6 +1,6 @@
 package nl.fontys.restaurantreservations.mappers.table;
 
-import nl.fontys.restaurantreservations.domain.TableDomain;
+import nl.fontys.restaurantreservations.domains.TableDomain;
 import nl.fontys.restaurantreservations.entities.TableEntity;
 import org.springframework.stereotype.Component;
 

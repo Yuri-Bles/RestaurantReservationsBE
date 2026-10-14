@@ -1,7 +1,6 @@
 package nl.fontys.restaurantreservations.repositories;
 
-import jakarta.persistence.Table;
-import nl.fontys.restaurantreservations.domain.TableDomain;
+import nl.fontys.restaurantreservations.domains.TableDomain;
 import nl.fontys.restaurantreservations.entities.TableEntity;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.interfaces.JPATableRepository;

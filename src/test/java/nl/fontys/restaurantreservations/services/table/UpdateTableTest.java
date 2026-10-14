@@ -1,6 +1,6 @@
 package nl.fontys.restaurantreservations.services.table;
 
-import nl.fontys.restaurantreservations.domain.TableDomain;
+import nl.fontys.restaurantreservations.domains.TableDomain;
 import nl.fontys.restaurantreservations.dtos.TableDTO;
 import nl.fontys.restaurantreservations.enums.TableStatus;
 import nl.fontys.restaurantreservations.mappers.table.*;
