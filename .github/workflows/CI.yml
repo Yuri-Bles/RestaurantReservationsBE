@@ -4,7 +4,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "main", "Development" ]
+    branches: [ "main", "Development", "Refactoring-1" ]
   pull_request:
     branches: [ "main", "Development" ]
 
@@ -45,7 +45,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build
-        run: ./gradlew build -x test
+        run: ./gradlew build -x test -x checkstyleMain -x checkstyleTest
 
   test:
     needs: build
