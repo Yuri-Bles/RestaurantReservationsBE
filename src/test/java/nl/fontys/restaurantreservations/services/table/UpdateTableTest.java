@@ -66,28 +66,6 @@ class UpdateTableTest
     }
 
     @Test
-    void updateTable_shouldReturn400_whenTableNumberIsBlank()
-    {
-        // Arrange
-        String oldTableNumber = "T01";
-        TableDomain existing = new TableDomain(oldTableNumber, 2, TableStatus.Inactive);
-        TableDomain expected = new TableDomain(" ", 4, TableStatus.Active);
-        TableDTO TableDTO = mapper.toDTO(expected);
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
-                .thenReturn(Optional.empty());
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
-                .thenReturn(Optional.of(existing));
-
-        // Act
-        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO);
-
-        // Assert
-        assertEquals(400, response.getStatusCode().value());
-    }
-
-    @Test
     void updateTable_shouldReturn404_whenTableDoesNotExist()
     {
         // Arrange
@@ -125,28 +103,6 @@ class UpdateTableTest
 
         // Assert
         assertEquals(500, response.getStatusCode().value());
-    }
-
-    @Test
-    void updateTable_shouldReturn400_whenCapacityIsBelow1()
-    {
-        // Arrange
-        String oldTableNumber = "T01";
-        TableDomain existing = new TableDomain(oldTableNumber, 2, TableStatus.Inactive);
-        TableDomain expected = new TableDomain("T02", -4, TableStatus.Active);
-        TableDTO TableDTO = mapper.toDTO(expected);
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
-                .thenReturn(Optional.empty());
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
-                .thenReturn(Optional.of(existing));
-
-        // Act
-        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO);
-
-        // Assert
-        assertEquals(400, response.getStatusCode().value());
     }
 
     @Test

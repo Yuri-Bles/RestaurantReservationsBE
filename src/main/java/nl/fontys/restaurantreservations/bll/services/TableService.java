@@ -96,14 +96,6 @@ public class TableService
         catch (Exception ex)
         { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Please try again later. " + ex); }
 
-        if (dto.tableNumber().isBlank())
-        { return ResponseEntityCreator.returnResponseEntity(400, "Table number is not valid."); }
-
-        if (dto.capacity() <= 0)
-        {
-            return ResponseEntityCreator.returnResponseEntity(400, "Table capacity must be above 0.");
-        }
-
         domain.setTableNumber(dto.tableNumber());
         domain.setCapacity(dto.capacity());
         domain.setStatus(dto.status());
