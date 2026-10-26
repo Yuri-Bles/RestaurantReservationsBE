@@ -27,7 +27,13 @@ public class TableService
 
     public ResponseEntity<?> getAllActiveTables()
     {
-        List<TableDomain> tables = repo.findAllByStatus(TableStatus.Active);
+        List<TableDomain> tables;
+        try {
+            tables = repo.findAllByStatus(TableStatus.Active);
+        }
+        catch (Exception ex) {
+            return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong internally.");
+        }
 
         if (tables.isEmpty())
         { return ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables"); }
@@ -39,7 +45,9 @@ public class TableService
 
     public ResponseEntity<?> getAllExistingTables()
     {
-        List<TableDomain> tables = Stream.concat(
+        List<TableDomain> tables;
+        try {
+        tables = Stream.concat(
                         repo.findAllByStatus(TableStatus.Active).stream(),
                         repo.findAllByStatus(TableStatus.Inactive).stream())
                 .sorted(
@@ -47,6 +55,10 @@ public class TableService
                                 .thenComparing(TableDomain::getTableNumber)
                 )
                 .toList();
+        }
+        catch (Exception ex) {
+            return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong internally.");
+        }
 
         if (tables.isEmpty())
         { return ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables"); }
