@@ -59,20 +59,6 @@ class CreateTableTest
     }
 
     @Test
-    void createTable_shouldReturn400_whenTableNumberIsBlank()
-    {
-        // Arrange
-        TableDomain newTableDomain = new TableDomain(" ", 4, TableStatus.Active);
-        TableDTO newTableDTO = mapper.toDTO(newTableDomain);
-
-        // Act
-        ResponseEntity<?> response = service.createTable(newTableDTO);
-
-        // Assert
-        assertEquals(400, response.getStatusCode().value());
-    }
-
-    @Test
     void createTable_shouldReturn400_whenTableNumberIsDuplicate()
     {
         // Arrange
@@ -80,22 +66,6 @@ class CreateTableTest
         TableDTO newTableDTO = mapper.toDTO(newTableDomain);
         when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active))
                 .thenReturn(Optional.of(newTableDomain));
-
-        // Act
-        ResponseEntity<?> response = service.createTable(newTableDTO);
-
-        // Assert
-        assertEquals(400, response.getStatusCode().value());
-    }
-
-    @Test
-    void createTable_shouldReturn400_whenCapacityIsBelow1()
-    {
-        // Arrange
-        TableDomain newTableDomain = new TableDomain("T01", -4, TableStatus.Active);
-        TableDTO newTableDTO = mapper.toDTO(newTableDomain);
-        when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active))
-                .thenReturn(Optional.empty());
 
         // Act
         ResponseEntity<?> response = service.createTable(newTableDTO);

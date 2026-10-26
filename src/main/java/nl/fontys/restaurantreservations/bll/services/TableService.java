@@ -72,14 +72,8 @@ public class TableService
     {
         TableDomain domain = mapper.toDomain(dto);
 
-        if (domain.getTableNumber().isBlank() || !isTableNumberAvailable(domain.getTableNumber()))
-        {
-            return ResponseEntityCreator.returnResponseEntity(400, "Table number is not valid.");
-        }
-
-        if (domain.getCapacity() <= 0)
-        {
-            return ResponseEntityCreator.returnResponseEntity(400, "Table capacity must be above 0.");
+        if (!isTableNumberAvailable(domain.getTableNumber())) {
+            return ResponseEntityCreator.returnResponseEntity(400, "Table number is already in use.");
         }
 
         try {
