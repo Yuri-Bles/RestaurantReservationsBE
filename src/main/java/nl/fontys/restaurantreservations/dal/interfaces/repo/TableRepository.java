@@ -9,5 +9,7 @@ import java.util.Optional;
 public interface TableRepository {
     List<TableDomain> findAllByStatus(TableStatus status);
 
+    void save(TableDomain table);
+
     Optional<TableDomain> findByTableNumberAndStatus(String tableNumber, TableStatus status);
 }
