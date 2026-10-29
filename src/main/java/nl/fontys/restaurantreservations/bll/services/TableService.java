@@ -5,8 +5,8 @@ import nl.fontys.restaurantreservations.api.mappers.TableDomainDTOMapper;
 import nl.fontys.restaurantreservations.bll.domains.TableDomain;
 import nl.fontys.restaurantreservations.bll.enums.TableStatus;
 import nl.fontys.restaurantreservations.bll.exceptions.TableNotFoundException;
-import nl.fontys.restaurantreservations.dal.repositories.TableRepositoryImpl;
 
+import nl.fontys.restaurantreservations.dal.interfaces.repo.TableRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +16,11 @@ import java.util.stream.Stream;
 @Service
 public class TableService
 {
-    private final TableRepositoryImpl repo;
+    private final TableRepository repo;
 
     private final TableDomainDTOMapper mapper = new TableDomainDTOMapper();
 
-    public TableService(TableRepositoryImpl repo)
+    public TableService(TableRepository repo)
     {
         this.repo = repo;
     }
