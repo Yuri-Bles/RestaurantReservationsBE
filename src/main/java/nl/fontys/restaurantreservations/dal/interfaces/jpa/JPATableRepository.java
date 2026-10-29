@@ -1,4 +1,4 @@
-package nl.fontys.restaurantreservations.dal.interfaces;
+package nl.fontys.restaurantreservations.dal.interfaces.jpa;
 
 import nl.fontys.restaurantreservations.bll.enums.TableStatus;
 import nl.fontys.restaurantreservations.dal.entities.TableEntity;

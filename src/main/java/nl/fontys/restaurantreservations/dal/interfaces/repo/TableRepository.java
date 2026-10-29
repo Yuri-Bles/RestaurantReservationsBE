@@ -1,4 +1,4 @@
-package nl.fontys.restaurantreservations.dal.interfaces;
+package nl.fontys.restaurantreservations.dal.interfaces.repo;
 
 import nl.fontys.restaurantreservations.bll.domains.TableDomain;
 import nl.fontys.restaurantreservations.bll.enums.TableStatus;
