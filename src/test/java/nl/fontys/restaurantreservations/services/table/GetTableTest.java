@@ -1,47 +1,45 @@
 package nl.fontys.restaurantreservations.services.table;
 
-import nl.fontys.restaurantreservations.dtos.ApiMessage;
-import nl.fontys.restaurantreservations.dtos.TableDTO;
-import nl.fontys.restaurantreservations.enums.TableStatus;
-import nl.fontys.restaurantreservations.interfaces.ITableRepository;
-import nl.fontys.restaurantreservations.models.TableModel;
-import nl.fontys.restaurantreservations.services.ResponseEntityCreator;
-import nl.fontys.restaurantreservations.services.TableService;
+import nl.fontys.restaurantreservations.api.mappers.TableDomainDTOMapper;
+import nl.fontys.restaurantreservations.bll.domains.TableDomain;
+import nl.fontys.restaurantreservations.api.dtos.TableDTO;
+import nl.fontys.restaurantreservations.bll.enums.TableStatus;
+import nl.fontys.restaurantreservations.dal.repositories.TableRepositoryImpl;
+import nl.fontys.restaurantreservations.bll.services.ResponseEntityCreator;
+import nl.fontys.restaurantreservations.bll.services.TableService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GetTableTest
 {
     @Mock
-    private ITableRepository repo;
+    private TableRepositoryImpl repo;
 
     @InjectMocks
     private TableService service;
+
+    TableDomainDTOMapper mapper = new TableDomainDTOMapper();
 
     @Test
     void getAllActiveTables_shouldReturnActiveTables()
     {
         // Arrange
-        TableModel tableModel1 = new TableModel("T01", 4, TableStatus.Active);
-        TableModel tableModel2 = new TableModel("T02", 6, TableStatus.Active);
-        TableModel tableModel3 = new TableModel("T03", 6, TableStatus.Active);
-        TableDTO table1 = new TableDTO(tableModel1);
-        TableDTO table2 = new TableDTO(tableModel2);
-        TableDTO table3 = new TableDTO(tableModel3);
+        TableDomain tableDomain1 = new TableDomain("T01", 4, TableStatus.Active);
+        TableDomain tableDomain2 = new TableDomain("T02", 6, TableStatus.Active);
+        TableDomain tableDomain3 = new TableDomain("T03", 6, TableStatus.Active);
+        TableDTO table1 = mapper.toDTO(tableDomain1);
+        TableDTO table2 = mapper.toDTO(tableDomain2);
+        TableDTO table3 = mapper.toDTO(tableDomain3);
 
         List<TableDTO> dtoList = List.of(table1, table2, table3);
         ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(
@@ -49,7 +47,7 @@ class GetTableTest
                 "Got tables successfully",
                 dtoList);
 
-        List<TableModel> repoReturn = List.of(tableModel1, tableModel2, tableModel3);
+        List<TableDomain> repoReturn = List.of(tableDomain1, tableDomain2, tableDomain3);
 
         when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
 
@@ -64,17 +62,17 @@ class GetTableTest
     void getAllActiveTables_shouldReturn500_whenRepoDoesntReturnTables()
     {
         // Arrange
-        TableModel tableModel1 = new TableModel("T01", 4, TableStatus.Active);
-        TableModel tableModel2 = new TableModel("T02", 6, TableStatus.Active);
-        TableModel tableModel3 = new TableModel("T03", 6, TableStatus.Active);
-        TableDTO table1 = new TableDTO(tableModel1);
-        TableDTO table2 = new TableDTO(tableModel2);
-        TableDTO table3 = new TableDTO(tableModel3);
+        TableDomain tableDomain1 = new TableDomain("T01", 4, TableStatus.Active);
+        TableDomain tableDomain2 = new TableDomain("T02", 6, TableStatus.Active);
+        TableDomain tableDomain3 = new TableDomain("T03", 6, TableStatus.Active);
+        TableDTO table1 = mapper.toDTO(tableDomain1);
+        TableDTO table2 = mapper.toDTO(tableDomain2);
+        TableDTO table3 = mapper.toDTO(tableDomain3);
 
         List<TableDTO> dtoList = List.of(table1, table2, table3);
         ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables");
 
-        List<TableModel> repoReturn = List.of();
+        List<TableDomain> repoReturn = List.of();
 
         when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
 
@@ -89,12 +87,12 @@ class GetTableTest
     void getAllExistingTables_shouldReturnExistingTables()
     {
         // Arrange
-        TableModel tableModel1 = new TableModel("T01", 4, TableStatus.Active);
-        TableModel tableModel2 = new TableModel("T02", 6, TableStatus.Inactive);
-        TableModel tableModel3 = new TableModel("T03", 6, TableStatus.Inactive);
-        TableDTO table1 = new TableDTO(tableModel1);
-        TableDTO table2 = new TableDTO(tableModel2);
-        TableDTO table3 = new TableDTO(tableModel3);
+        TableDomain tableDomain1 = new TableDomain("T01", 4, TableStatus.Active);
+        TableDomain tableDomain2 = new TableDomain("T02", 6, TableStatus.Inactive);
+        TableDomain tableDomain3 = new TableDomain("T03", 6, TableStatus.Inactive);
+        TableDTO table1 = mapper.toDTO(tableDomain1);
+        TableDTO table2 = mapper.toDTO(tableDomain2);
+        TableDTO table3 = mapper.toDTO(tableDomain3);
 
         List<TableDTO> dtoList = List.of(table1, table2, table3);
         ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(
@@ -102,8 +100,8 @@ class GetTableTest
                 "Got tables successfully",
                 dtoList);
 
-        List<TableModel> repoReturnActive = List.of(tableModel1);
-        List<TableModel> repoReturnInactive = List.of(tableModel2, tableModel3);
+        List<TableDomain> repoReturnActive = List.of(tableDomain1);
+        List<TableDomain> repoReturnInactive = List.of(tableDomain2, tableDomain3);
 
         when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturnActive);
         when(repo.findAllByStatus(TableStatus.Inactive)).thenReturn(repoReturnInactive);
@@ -121,7 +119,7 @@ class GetTableTest
         // Arrange
         ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables");
 
-        List<TableModel> repoReturn = List.of();
+        List<TableDomain> repoReturn = List.of();
 
         when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
         when(repo.findAllByStatus(TableStatus.Inactive)).thenReturn(repoReturn);

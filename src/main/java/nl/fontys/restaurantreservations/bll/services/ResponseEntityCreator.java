@@ -1,6 +1,7 @@
-package nl.fontys.restaurantreservations.services;
+package nl.fontys.restaurantreservations.bll.services;
 
-import nl.fontys.restaurantreservations.dtos.ApiMessage;
+import nl.fontys.restaurantreservations.api.dtos.ApiMessage;
+
 import org.springframework.http.ResponseEntity;
 
 public final class ResponseEntityCreator

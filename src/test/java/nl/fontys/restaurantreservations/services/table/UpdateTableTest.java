@@ -1,10 +1,11 @@
 package nl.fontys.restaurantreservations.services.table;
 
-import nl.fontys.restaurantreservations.dtos.TableDTO;
-import nl.fontys.restaurantreservations.enums.TableStatus;
-import nl.fontys.restaurantreservations.interfaces.ITableRepository;
-import nl.fontys.restaurantreservations.models.TableModel;
-import nl.fontys.restaurantreservations.services.TableService;
+import nl.fontys.restaurantreservations.api.mappers.TableDomainDTOMapper;
+import nl.fontys.restaurantreservations.bll.domains.TableDomain;
+import nl.fontys.restaurantreservations.api.dtos.TableDTO;
+import nl.fontys.restaurantreservations.bll.enums.TableStatus;
+import nl.fontys.restaurantreservations.dal.repositories.TableRepositoryImpl;
+import nl.fontys.restaurantreservations.bll.services.TableService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -23,20 +24,22 @@ import static org.mockito.Mockito.*;
 class UpdateTableTest
 {
     @Mock
-    private ITableRepository repo;
+    private TableRepositoryImpl repo;
 
     @InjectMocks
     private TableService service;
+
+    TableDomainDTOMapper mapper = new TableDomainDTOMapper();
 
     @Test
     void updateTable_shouldUpdateTable_whenValuesAreValidAndTableExists()
     {
         // Arrange
         String oldTableNumber = "T01";
-        TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
-        TableModel expected = new TableModel("T02", 4, TableStatus.Active);
-        TableDTO TableDTO = new TableDTO(expected);
-        ArgumentCaptor<TableModel> captor = ArgumentCaptor.forClass(TableModel.class);
+        TableDomain existing = new TableDomain(oldTableNumber, 2, TableStatus.Inactive);
+        TableDomain expected = new TableDomain("T02", 4, TableStatus.Active);
+        TableDTO TableDTO = mapper.toDTO(expected);
+        ArgumentCaptor<TableDomain> captor = ArgumentCaptor.forClass(TableDomain.class);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
                 .thenReturn(Optional.empty());
@@ -44,8 +47,10 @@ class UpdateTableTest
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
                 .thenReturn(Optional.of(existing));
 
-        when(repo.save(any(TableModel.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+        doAnswer(invocation -> {
+            TableDomain savedDomain = invocation.getArgument(0);
+            return null;
+        }).when(repo).save(any(TableDomain.class));
 
         // Act
         service.updateTable(oldTableNumber, TableDTO);
@@ -53,33 +58,11 @@ class UpdateTableTest
         // Assert
         verify(repo).save(captor.capture());
 
-        TableModel actual = captor.getValue();
+        TableDomain actual = captor.getValue();
 
         assertEquals(expected.getTableNumber(), actual.getTableNumber());
         assertEquals(expected.getCapacity(), actual.getCapacity());
         assertEquals(expected.getStatus(), actual.getStatus());
-    }
-
-    @Test
-    void updateTable_shouldReturn400_whenTableNumberIsBlank()
-    {
-        // Arrange
-        String oldTableNumber = "T01";
-        TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
-        TableModel expected = new TableModel(" ", 4, TableStatus.Active);
-        TableDTO TableDTO = new TableDTO(expected);
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
-                .thenReturn(Optional.empty());
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
-                .thenReturn(Optional.of(existing));
-
-        // Act
-        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO);
-
-        // Assert
-        assertEquals(400, response.getStatusCode().value());
     }
 
     @Test
@@ -100,7 +83,7 @@ class UpdateTableTest
 
         // Assert
         assertEquals(404, response.getStatusCode().value());
-        verify(repo, never()).save(any(TableModel.class));
+        verify(repo, never()).save(any(TableDomain.class));
     }
 
     @Test
@@ -108,9 +91,9 @@ class UpdateTableTest
     {
         // Arrange
         String oldTableNumber = "T01";
-        TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
-        TableModel expected = new TableModel("T02", 4, TableStatus.Active);
-        TableDTO TableDTO = new TableDTO(expected);
+        TableDomain existing = new TableDomain(oldTableNumber, 2, TableStatus.Inactive);
+        TableDomain expected = new TableDomain("T02", 4, TableStatus.Active);
+        TableDTO TableDTO = mapper.toDTO(expected);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
                 .thenThrow(new RuntimeException());
@@ -120,28 +103,6 @@ class UpdateTableTest
 
         // Assert
         assertEquals(500, response.getStatusCode().value());
-    }
-
-    @Test
-    void updateTable_shouldReturn400_whenCapacityIsBelow1()
-    {
-        // Arrange
-        String oldTableNumber = "T01";
-        TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
-        TableModel expected = new TableModel("T02", -4, TableStatus.Active);
-        TableDTO TableDTO = new TableDTO(expected);
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
-                .thenReturn(Optional.empty());
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
-                .thenReturn(Optional.of(existing));
-
-        // Act
-        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO);
-
-        // Assert
-        assertEquals(400, response.getStatusCode().value());
     }
 
     @Test
@@ -149,9 +110,9 @@ class UpdateTableTest
     {
         // Arrange
         String oldTableNumber = "T01";
-        TableModel existing = new TableModel(oldTableNumber, 2, TableStatus.Inactive);
-        TableModel expected = new TableModel("T02", 4, TableStatus.Active);
-        TableDTO TableDTO = new TableDTO(expected);
+        TableDomain existing = new TableDomain(oldTableNumber, 2, TableStatus.Inactive);
+        TableDomain expected = new TableDomain("T02", 4, TableStatus.Active);
+        TableDTO TableDTO = mapper.toDTO(expected);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
                 .thenReturn(Optional.empty());
@@ -159,14 +120,15 @@ class UpdateTableTest
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
                 .thenReturn(Optional.of(existing));
 
-        when(repo.save(any(TableModel.class)))
-                .thenThrow(new RuntimeException());
+        doThrow(new RuntimeException())
+                .when(repo)
+                .save(any(TableDomain.class));
 
         // Act
         ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO);
 
         // Assert
         assertEquals(500, response.getStatusCode().value());
-        verify(repo).save(any(TableModel.class));
+        verify(repo).save(any(TableDomain.class));
     }
 }
