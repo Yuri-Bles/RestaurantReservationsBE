@@ -1,39 +1,29 @@
-package nl.fontys.restaurantreservations.models;
+package nl.fontys.restaurantreservations.bll.domains;
 
-import jakarta.persistence.*;
-import nl.fontys.restaurantreservations.enums.TableStatus;
+import nl.fontys.restaurantreservations.bll.enums.TableStatus;
 
-@Entity
-@Table(name = "tables")
-public class TableModel {
+public class TableDomain {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private final Long id;
 
-    @Column(name = "table_number")
     private String tableNumber;
 
     private Integer capacity;
 
-    @Enumerated(EnumType.STRING)
     private TableStatus status;
 
-    protected TableModel() {
-    }
-
-    public TableModel(String tableNumber, Integer capacity, TableStatus status)
-    {
+    public TableDomain(Long id, String tableNumber, Integer capacity, TableStatus status) {
+        this.id = id;
         this.tableNumber = tableNumber;
         this.capacity = capacity;
         this.status = status;
     }
 
-    public TableModel(String tableNumber, Integer capacity, String status)
-    {
+    public TableDomain(String tableNumber, Integer capacity, TableStatus status) {
+        this.id = null;
         this.tableNumber = tableNumber;
         this.capacity = capacity;
-        this.status = TableStatus.valueOf(status);
+        this.status = status;
     }
 
     //Getters

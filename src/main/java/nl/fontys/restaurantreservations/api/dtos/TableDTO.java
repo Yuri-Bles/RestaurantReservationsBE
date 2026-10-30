@@ -1,17 +1,15 @@
-package nl.fontys.restaurantreservations.dtos;
+package nl.fontys.restaurantreservations.api.dtos;
 
-import nl.fontys.restaurantreservations.enums.TableStatus;
-import nl.fontys.restaurantreservations.models.TableModel;
+import nl.fontys.restaurantreservations.bll.enums.TableStatus;
+import nl.fontys.restaurantreservations.dal.entities.TableEntity;
 
 public record TableDTO(
-        Long id,
         String tableNumber,
         Integer capacity,
         TableStatus status
 ) {
-    public TableDTO(TableModel table) {
+    public TableDTO(TableEntity table) {
         this(
-                table.getId(),
                 table.getTableNumber(),
                 table.getCapacity(),
                 table.getStatus()
