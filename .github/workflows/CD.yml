@@ -104,58 +104,58 @@ jobs:
           ref: ${{ github.event.workflow_run.head_sha }}
           persist-credentials: false
 
-#      - name: Prepare SSH
-#        env:
-#          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
-#          SERVER_HOST: ${{ secrets.SERVER_HOST }}
-#        run: |
-#          mkdir -p ~/.ssh
-#          chmod 700 ~/.ssh
-#          printf '%s\n' "$SERVER_SSH_KEY" > ~/.ssh/id_ed25519
-#          chmod 600 ~/.ssh/id_ed25519
-#
-#      - name: Create secret files
-#        env:
-#          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-#          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-#        run: |
-#          mkdir -p "$RUNNER_TEMP/secrets"
-#          umask 077
-#          printf '%s' "$DB_USERNAME" > "$RUNNER_TEMP/secrets/db_username.txt"
-#          printf '%s' "$DB_PASSWORD" > "$RUNNER_TEMP/secrets/db_password.txt"
-#
-#      - name: Transfer secrets to VM
-#        env:
-#          SERVER_HOST: ${{ secrets.SERVER_HOST }}
-#          SERVER_USER: ${{ secrets.SERVER_USER }}
-#        run: |
-#          ssh "$SERVER_USER@$SERVER_HOST" \
-#            "mkdir -p ~/RestaurantReservationsBE/secrets"
-#
-#          scp "$RUNNER_TEMP/secrets/"*.txt \
-#            "$SERVER_USER@$SERVER_HOST:~/RestaurantReservationsBE/secrets/"
-#
-#          ssh "$SERVER_USER@$SERVER_HOST" \
-#            "chmod 600 ~/RestaurantReservationsBE/secrets/*.txt"
+      - name: Prepare SSH
+        env:
+          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SERVER_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
 
       - name: Create secret files
         env:
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          set -euo pipefail
-
-          mkdir -p secrets
+          mkdir -p "$RUNNER_TEMP/secrets"
           umask 077
+          printf '%s' "$DB_USERNAME" > "$RUNNER_TEMP/secrets/db_username.txt"
+          printf '%s' "$DB_PASSWORD" > "$RUNNER_TEMP/secrets/db_password.txt"
 
-          printf '%s' "$DB_USERNAME" > secrets/DB_USERNAME.txt
-          printf '%s' "$DB_PASSWORD" > secrets/DB_PASSWORD.txt
+      - name: Transfer secrets to VM
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          ssh "$SERVER_USER@$SERVER_HOST" \
+            "mkdir -p ~/RestaurantReservationsBE/secrets"
 
-          # Verify that both files exist and are not empty
-          test -s secrets/DB_USERNAME.txt
-          test -s secrets/DB_PASSWORD.txt
+          scp "$RUNNER_TEMP/secrets/"*.txt \
+            "$SERVER_USER@$SERVER_HOST:~/RestaurantReservationsBE/secrets/"
 
-          echo "Database secret files successfully created."
+          ssh "$SERVER_USER@$SERVER_HOST" \
+            "chmod 600 ~/RestaurantReservationsBE/secrets/*.txt"
+
+#      - name: Create secret files
+#        env:
+#          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+#          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+#        run: |
+#          set -euo pipefail
+#
+#          mkdir -p secrets
+#          umask 077
+#
+#          printf '%s' "$DB_USERNAME" > secrets/DB_USERNAME.txt
+#          printf '%s' "$DB_PASSWORD" > secrets/DB_PASSWORD.txt
+#
+#          # Verify that both files exist and are not empty
+#          test -s secrets/DB_USERNAME.txt
+#          test -s secrets/DB_PASSWORD.txt
+#
+#          echo "Database secret files successfully created."
 
       - name: Deploy with Docker Compose
         env:
