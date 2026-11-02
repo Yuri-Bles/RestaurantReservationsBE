@@ -15,7 +15,7 @@ services:
       - restaurant-reservation-data:/var/lib/postgresql/data
 
   backend:
-    image: ghcr.io/yuri-bles/restaurant-reservations-be:main
+    image: ${BACKEND_IMAGE}:${IMAGE_TAG}
     build: .
     ports:
       - "8080:8080"
