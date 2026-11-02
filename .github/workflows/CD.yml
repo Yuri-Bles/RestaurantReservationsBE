@@ -121,8 +121,8 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/deploy-secrets"
           umask 077
-          printf '%s' "$DB_USERNAME" > "$RUNNER_TEMP/deploy-secrets/db_username.txt"
-          printf '%s' "$DB_PASSWORD" > "$RUNNER_TEMP/deploy-secrets/db_password.txt"
+          printf '%s' "$DB_USERNAME" > "$RUNNER_TEMP/secrets/db_username.txt"
+          printf '%s' "$DB_PASSWORD" > "$RUNNER_TEMP/secrets/db_password.txt"
 
       - name: Transfer secrets to VM
         env:
