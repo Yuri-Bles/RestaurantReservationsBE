@@ -132,7 +132,7 @@ jobs:
           ssh "$SERVER_USER@$SERVER_HOST" \
             "mkdir -p ~/RestaurantReservationsBE/secrets"
 
-          scp "$RUNNER_TEMP/deploy-secrets/"*.txt \
+          scp "$RUNNER_TEMP/secrets/"*.txt \
             "$SERVER_USER@$SERVER_HOST:~/RestaurantReservationsBE/secrets/"
 
           ssh "$SERVER_USER@$SERVER_HOST" \
