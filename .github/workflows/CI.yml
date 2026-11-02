@@ -47,11 +47,16 @@ jobs:
       - name: Build
         run: ./gradlew build -x test -x checkstyleMain -x checkstyleTest
 
+      - name: Prepare JAR artifact
+        run: |
+          mkdir -p artifact
+          cp build/libs/*.jar artifact/app.jar
+
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
           name: RestaurantReservationsBE
-          path: build/libs/*.jar
+          path: artifact/app.jar
           retention-days: 7
 
   test:
