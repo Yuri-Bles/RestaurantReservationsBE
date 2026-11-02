@@ -17,7 +17,7 @@ services:
       - restaurant-reservation-data:/var/lib/postgresql/data
 
   backend:
-    image: ${BACKEND_IMAGE}:${IMAGE_TAG}
+    image: ${BACKEND_IMAGE}:main
     build: .
     ports:
       - "8081:8080"
