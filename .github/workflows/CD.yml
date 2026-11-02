@@ -119,7 +119,7 @@ jobs:
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          mkdir -p "$RUNNER_TEMP/deploy-secrets"
+          mkdir -p "$RUNNER_TEMP/secrets"
           umask 077
           printf '%s' "$DB_USERNAME" > "$RUNNER_TEMP/secrets/db_username.txt"
           printf '%s' "$DB_PASSWORD" > "$RUNNER_TEMP/secrets/db_password.txt"
