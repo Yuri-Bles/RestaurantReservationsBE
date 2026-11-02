@@ -2,7 +2,7 @@ FROM eclipse-temurin:25-jre-jammy
 
 WORKDIR /app
 
-COPY artifact/app.jar app.jar
+COPY artifact/*.jar app.jar
 
 
 RUN useradd --system --create-home appuser \
