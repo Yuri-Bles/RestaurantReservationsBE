@@ -29,9 +29,9 @@ services:
 
 secrets:
   DB_USERNAME:
-    file: ./secrets/DB_USERNAME.txt
+    file: ./secrets/restaurant-reservations-be_DB_USERNAME.txt
   DB_PASSWORD:
-    file: ./secrets/DB_PASSWORD.txt
+    file: ./secrets/restaurant-reservations-be_DB_PASSWORD.txt
 
 volumes:
   restaurant-reservation-data:
