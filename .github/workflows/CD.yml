@@ -1,0 +1,167 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: [ "CI" ]
+    types: [completed]
+    branches: [ "main", "Deployment" ]
+
+permissions:
+  contents: read
+  actions: read
+  packages: write
+
+jobs:
+  build-docker-image:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'Deployment' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout tested commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: RestaurantReservationsBE-build
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./artifact
+
+      - name: Verify build artifact
+        run: test -f artifact/app.jar
+
+      - name: Set image name
+        run: |
+          echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+
+      - name: Login to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        env:
+          COMMIT_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          docker build \
+            --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
+            --label "org.opencontainers.image.revision=$COMMIT_SHA" \
+            -t "$IMAGE:main" \
+            -t "$IMAGE:$COMMIT_SHA" .
+          
+      - name: Verify Docker image
+        run: docker image inspect "$IMAGE:main"
+
+      - name: Push Docker image to GHCR
+        env:
+          COMMIT_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          docker push "$IMAGE:main"
+          docker push "$IMAGE:$COMMIT_SHA"
+
+  deploy:
+    needs: build-docker-image
+
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'Deployment' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+
+    runs-on: self-hosted
+
+    permissions:
+      contents: read
+      packages: read
+
+    concurrency:
+      group: restaurant-reservations-be
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout tested commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+
+      - name: Prepare SSH
+        env:
+          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SERVER_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+      - name: Create secret files
+        env:
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/deploy-secrets"
+          umask 077
+          printf '%s' "$DB_USERNAME" > "$RUNNER_TEMP/deploy-secrets/db_username.txt"
+          printf '%s' "$DB_PASSWORD" > "$RUNNER_TEMP/deploy-secrets/db_password.txt"
+
+      - name: Transfer secrets to VM
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          ssh "$SERVER_USER@$SERVER_HOST" \
+            "mkdir -p ~/RestaurantReservationsBE/secrets"
+
+          scp "$RUNNER_TEMP/deploy-secrets/"*.txt \
+            "$SERVER_USER@$SERVER_HOST:~/RestaurantReservationsBE/secrets/"
+
+          ssh "$SERVER_USER@$SERVER_HOST" \
+            "chmod 600 ~/RestaurantReservationsBE/secrets/*.txt"
+
+      - name: Deploy with Docker Compose
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+          IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
+
+        run: |
+          set -euo pipefail
+
+          # Verify required values
+          test -n "$GHCR_TOKEN"
+          test -n "$IMAGE_TAG"
+
+          # Keep registry credentials temporary
+          export DOCKER_CONFIG
+          DOCKER_CONFIG="$(mktemp -d)"
+          trap 'rm -rf "$DOCKER_CONFIG"' EXIT
+
+          # Authenticate to GHCR
+          printf '%s' "$GHCR_TOKEN" |
+            docker login ghcr.io \
+              --username "$GHCR_USER" \
+              --password-stdin
+
+          # Pull and deploy the backend
+          docker compose \
+            -p restaurant-reservations-be \
+            -f docker-compose.yml \
+            up -d --pull always --no-build
+
+          # Show running containers
+          docker compose \
+            -p restaurant-reservations-be \
+            -f docker-compose.yml \
+            ps

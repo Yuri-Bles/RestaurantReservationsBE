@@ -1,10 +1,10 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: Java CI with Gradle
+name: CI
 
 on:
   push:
-    branches: [ "main", "Development" ]
+    branches: [ "main", "Development", "Deployment" ]
   pull_request:
     branches: [ "main", "Development" ]
 
@@ -46,6 +46,13 @@ jobs:
 
       - name: Build
         run: ./gradlew build -x test -x checkstyleMain -x checkstyleTest
+
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RestaurantReservationsBE
+          path: build/libs/*.jar
+          retention-days: 7
 
   test:
     needs: build
