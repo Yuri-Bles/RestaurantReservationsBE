@@ -73,6 +73,12 @@ jobs:
           docker push "$IMAGE:$COMMIT_SHA"
 
   deploy:
+    env:
+      GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GHCR_USER: ${{ github.actor }}
+      IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
+      BACKEND_IMAGE: ghcr.io/yuri-bles/restaurantreservationsbe
+
     needs: build-docker-image
 
     if: >-
