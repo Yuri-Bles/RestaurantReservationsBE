@@ -36,9 +36,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: ./artifact
 
-      - name: Verify Docker Image
-        run: docker image inspect "$IMAGE:main"
-
       - name: Set image name
         run: |
           echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
