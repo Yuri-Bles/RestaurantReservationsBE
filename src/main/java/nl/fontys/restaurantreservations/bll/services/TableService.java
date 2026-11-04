@@ -4,8 +4,10 @@ import nl.fontys.restaurantreservations.api.dtos.TableDTO;
 import nl.fontys.restaurantreservations.api.mappers.TableDomainDTOMapper;
 import nl.fontys.restaurantreservations.bll.domains.TableDomain;
 import nl.fontys.restaurantreservations.bll.enums.TableStatus;
+import nl.fontys.restaurantreservations.bll.exceptions.EmptyTableListException;
 import nl.fontys.restaurantreservations.bll.exceptions.TableNotFoundException;
 
+import nl.fontys.restaurantreservations.bll.exceptions.TableNumberAlreadyInUseException;
 import nl.fontys.restaurantreservations.dal.interfaces.repo.TableRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,43 +30,31 @@ public class TableService
     public ResponseEntity<?> getAllActiveTables()
     {
         List<TableDomain> tables;
-        try {
-            tables = repo.findAllByStatus(TableStatus.Active);
-        }
-        catch (Exception ex) {
-            return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong internally.");
-        }
+        tables = repo.findAllByStatus(TableStatus.Active);
 
         if (tables.isEmpty())
-        { return ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables"); }
+        { throw new EmptyTableListException("Failed to get tables"); }
 
         List<TableDTO> dtos = mapper.listToDTO(tables);
-
         return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", dtos);
     }
 
     public ResponseEntity<?> getAllExistingTables()
     {
-        List<TableDomain> tables;
-        try {
-        tables = Stream.concat(
-                        repo.findAllByStatus(TableStatus.Active).stream(),
-                        repo.findAllByStatus(TableStatus.Inactive).stream())
-                .sorted(
-                        Comparator.comparing(TableDomain::getStatus)
-                                .thenComparing(TableDomain::getTableNumber)
-                )
-                .toList();
-        }
-        catch (Exception ex) {
-            return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong internally.");
-        }
+        List<TableDomain> tables = Stream.concat(
+                repo.findAllByStatus(TableStatus.Active).stream(),
+                repo.findAllByStatus(TableStatus.Inactive).stream()
+            )
+            .sorted(
+                Comparator.comparing(TableDomain::getStatus)
+                        .thenComparing(TableDomain::getTableNumber)
+            )
+            .toList();
 
         if (tables.isEmpty())
-        { return ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables"); }
+        { throw new EmptyTableListException("Failed to get tables"); }
 
         List<TableDTO> dtos = mapper.listToDTO(tables);
-
         return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", dtos);
     }
 
@@ -73,58 +63,32 @@ public class TableService
         TableDomain domain = mapper.toDomain(dto);
 
         if (!isTableNumberAvailable(domain.getTableNumber())) {
-            return ResponseEntityCreator.returnResponseEntity(400, "Table number is already in use.");
+            throw new TableNumberAlreadyInUseException("Table number is already in use.");
         }
 
-        try {
-            repo.save(domain);
-        }
-        catch (Exception ex) {
-            return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong internally.");
-        }
+        repo.save(domain);
         return ResponseEntityCreator.returnResponseEntity(201, "Table successfully created.");
     }
 
     public ResponseEntity<?> updateTable(String oldTableNumber, TableDTO dto)
     {
         TableDomain domain;
-
-        try
-        { domain = getTableByTableNumber(oldTableNumber); }
-        catch (TableNotFoundException ex)
-        { return ResponseEntityCreator.returnResponseEntity(404, "Table doesn't exist"); }
-        catch (Exception ex)
-        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Please try again later. " + ex); }
+        domain = getTableByTableNumber(oldTableNumber);
 
         domain.setTableNumber(dto.tableNumber());
         domain.setCapacity(dto.capacity());
         domain.setStatus(dto.status());
 
-        try
-        { repo.save(domain); }
-        catch (Exception ex)
-        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later. " + ex); }
-
+        repo.save(domain);
         return ResponseEntityCreator.returnResponseEntity(200, "Table successfully updated.");
     }
 
     public ResponseEntity<?> deleteTable(String tableNumber)
     {
-        TableDomain domain;
-        try
-        { domain = getTableByTableNumber(tableNumber); }
-        catch (TableNotFoundException ex)
-        { return ResponseEntityCreator.returnResponseEntity(404, "Table does not exist."); }
-        catch (Exception ex)
-        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later. " + ex); }
-
+        TableDomain domain = getTableByTableNumber(tableNumber);
         domain.setStatus(TableStatus.Removed);
 
-        try
-        { repo.save(domain); }
-        catch (Exception ex)
-        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later."); }
-
+        repo.save(domain);
         return ResponseEntityCreator.returnResponseEntity(200, "Table successfully removed.");
     }
 

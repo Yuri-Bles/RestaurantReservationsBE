@@ -4,6 +4,7 @@ import nl.fontys.restaurantreservations.api.mappers.TableDomainDTOMapper;
 import nl.fontys.restaurantreservations.bll.domains.TableDomain;
 import nl.fontys.restaurantreservations.api.dtos.TableDTO;
 import nl.fontys.restaurantreservations.bll.enums.TableStatus;
+import nl.fontys.restaurantreservations.bll.exceptions.TableNotFoundException;
 import nl.fontys.restaurantreservations.dal.repositories.TableRepositoryImpl;
 import nl.fontys.restaurantreservations.bll.services.TableService;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -79,55 +81,12 @@ class DeleteTableTest
                 .thenReturn(Optional.empty());
 
         // Act
-        ResponseEntity<?> response = service.deleteTable(TableDTO.tableNumber());
+        TableNotFoundException exception = assertThrows(
+                TableNotFoundException.class,
+                () -> service.deleteTable(TableDTO.tableNumber())
+        );
 
         // Assert
-        assertEquals(404, response.getStatusCode().value());
-    }
-
-    @Test
-    void deleteTable_shouldReturn500_whenFailsToGetModel()
-    {
-        // Arrange
-        TableDomain existing = new TableDomain("T02", 4, TableStatus.Inactive);
-        TableDomain expected = new TableDomain("T02", 4, TableStatus.Removed);
-        TableDTO TableDTO = mapper.toDTO(expected);
-        ArgumentCaptor<TableDomain> captor = ArgumentCaptor.forClass(TableDomain.class);
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
-                .thenThrow(new RuntimeException());
-
-        // Act
-        ResponseEntity<?> response = service.deleteTable(TableDTO.tableNumber());
-
-        // Assert
-        assertEquals(500, response.getStatusCode().value());
-    }
-
-    @Test
-    void deleteTable_shouldReturn500_whenModelFailsToUpdate()
-    {
-        // Arrange
-        TableDomain existing = new TableDomain("T02", 4, TableStatus.Inactive);
-        TableDomain expected = new TableDomain("T02", 4, TableStatus.Removed);
-        TableDTO TableDTO = mapper.toDTO(expected);
-        ArgumentCaptor<TableDomain> captor = ArgumentCaptor.forClass(TableDomain.class);
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
-                .thenReturn(Optional.empty());
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
-                .thenReturn(Optional.of(existing));
-
-        doThrow(new RuntimeException())
-                .when(repo)
-                .save(any(TableDomain.class));
-
-        // Act
-        ResponseEntity<?> response = service.deleteTable(TableDTO.tableNumber());
-
-        // Assert
-        assertEquals(500, response.getStatusCode().value());
-        verify(repo).save(any(TableDomain.class));
+        assertEquals("Table doesn't exist", exception.getMessage());
     }
 }
