@@ -1,4 +1,4 @@
-package nl.fontys.restaurantreservations.api.handlers;
+package nl.fontys.restaurantreservations.bll.exceptions;
 
 import nl.fontys.restaurantreservations.api.dtos.ApiMessage;
 
