@@ -7,31 +7,35 @@ services:
       POSTGRES_USER_FILE: /run/secrets/DB_USERNAME
       POSTGRES_PASSWORD_FILE: /run/secrets/DB_PASSWORD
     secrets:
-      - DB_USERNAME
-      - DB_PASSWORD
+      - source: app_db_username
+        target: DB_USERNAME
+      - source: app_db_password
+        target: DB_PASSWORD
     ports:
       - "5432:5432"
     volumes:
       - restaurant-reservation-data:/var/lib/postgresql/data
 
   backend:
-    image: restaurantreservationsbe
+    image: ${BACKEND_IMAGE}:main
     build: .
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       DB_URL: jdbc:postgresql://database:5432/RestaurantReservations
     secrets:
-      - DB_USERNAME
-      - DB_PASSWORD
+      - source: app_db_username
+        target: spring.datasource.username
+      - source: app_db_password
+        target: spring.datasource.password
     depends_on:
       - database
 
 secrets:
-  DB_USERNAME:
-    file: ./secrets/DB_USERNAME.txt
-  DB_PASSWORD:
-    file: ./secrets/DB_PASSWORD.txt
+  app_db_username:
+    environment: DB_USERNAME
+  app_db_password:
+    environment: DB_PASSWORD
 
 volumes:
   restaurant-reservation-data:
