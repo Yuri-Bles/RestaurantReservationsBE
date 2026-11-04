@@ -40,26 +40,20 @@ public class TableService
 
     public ResponseEntity<?> getAllExistingTables()
     {
-        List<TableDomain> tables;
-        try {
-        tables = Stream.concat(
-                        repo.findAllByStatus(TableStatus.Active).stream(),
-                        repo.findAllByStatus(TableStatus.Inactive).stream())
-                .sorted(
-                        Comparator.comparing(TableDomain::getStatus)
-                                .thenComparing(TableDomain::getTableNumber)
-                )
-                .toList();
-        }
-        catch (Exception ex) {
-            return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong internally.");
-        }
+        List<TableDomain> tables = Stream.concat(
+                repo.findAllByStatus(TableStatus.Active).stream(),
+                repo.findAllByStatus(TableStatus.Inactive).stream()
+            )
+            .sorted(
+                Comparator.comparing(TableDomain::getStatus)
+                        .thenComparing(TableDomain::getTableNumber)
+            )
+            .toList();
 
         if (tables.isEmpty())
-        { return ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables"); }
+        { throw new EmptyTableListException("Failed to get tables"); }
 
         List<TableDTO> dtos = mapper.listToDTO(tables);
-
         return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", dtos);
     }
 

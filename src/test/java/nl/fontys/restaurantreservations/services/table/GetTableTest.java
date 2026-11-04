@@ -111,17 +111,18 @@ class GetTableTest
     void getAllExistingTables_shouldReturn500_whenRepoDoesntReturnTables()
     {
         // Arrange
-        ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables");
-
         List<TableDomain> repoReturn = List.of();
 
         when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
         when(repo.findAllByStatus(TableStatus.Inactive)).thenReturn(repoReturn);
 
         // Act
-        ResponseEntity<?> actual = service.getAllExistingTables();
+        EmptyTableListException exception = assertThrows(
+                EmptyTableListException.class,
+                () -> service.getAllExistingTables()
+        );
 
         // Assert
-        assertEquals(expected, actual);
+        assertEquals("Failed to get tables", exception.getMessage());
     }
 }
