@@ -7,6 +7,7 @@ import nl.fontys.restaurantreservations.bll.enums.TableStatus;
 import nl.fontys.restaurantreservations.bll.exceptions.EmptyTableListException;
 import nl.fontys.restaurantreservations.bll.exceptions.TableNotFoundException;
 
+import nl.fontys.restaurantreservations.bll.exceptions.TableNumberAlreadyInUseException;
 import nl.fontys.restaurantreservations.dal.interfaces.repo.TableRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -62,15 +63,10 @@ public class TableService
         TableDomain domain = mapper.toDomain(dto);
 
         if (!isTableNumberAvailable(domain.getTableNumber())) {
-            return ResponseEntityCreator.returnResponseEntity(400, "Table number is already in use.");
+            throw new TableNumberAlreadyInUseException("Table number is already in use.");
         }
 
-        try {
-            repo.save(domain);
-        }
-        catch (Exception ex) {
-            return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong internally.");
-        }
+        repo.save(domain);
         return ResponseEntityCreator.returnResponseEntity(201, "Table successfully created.");
     }
 

@@ -1,6 +1,5 @@
 package nl.fontys.restaurantreservations.bll.exceptions;
 
-import nl.fontys.restaurantreservations.api.dtos.ApiMessage;
 import nl.fontys.restaurantreservations.bll.services.ResponseEntityCreator;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -42,7 +41,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EmptyTableListException.class)
-    public ResponseEntity<?> handleNotFound(EmptyTableListException ex) {
+    public ResponseEntity<?> handleEmptyList(EmptyTableListException ex) {
         return ResponseEntityCreator.returnResponseEntity(500, ex.getMessage());
+    }
+
+    @ExceptionHandler(TableNumberAlreadyInUseException.class)
+    public ResponseEntity<?> handleAlreadyInUse(TableNumberAlreadyInUseException ex) {
+        return ResponseEntityCreator.returnResponseEntity(400, ex.getMessage());
     }
 }
