@@ -14,6 +14,15 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleGeneralException(Exception ex) {
+        return ResponseEntityCreator.returnResponseEntity(
+                500,
+                "Something went wrong internally, please try again later",
+                ex.getMessage()
+        );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationErrors(
             MethodArgumentNotValidException exception)
