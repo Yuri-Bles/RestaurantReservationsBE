@@ -4,7 +4,6 @@ import nl.fontys.restaurantreservations.api.mappers.TableDomainDTOMapper;
 import nl.fontys.restaurantreservations.bll.domains.TableDomain;
 import nl.fontys.restaurantreservations.api.dtos.TableDTO;
 import nl.fontys.restaurantreservations.bll.enums.TableStatus;
-import nl.fontys.restaurantreservations.bll.exceptions.EmptyTableListException;
 import nl.fontys.restaurantreservations.bll.exceptions.TableNumberAlreadyInUseException;
 import nl.fontys.restaurantreservations.dal.repositories.TableRepositoryImpl;
 import nl.fontys.restaurantreservations.bll.services.TableService;
@@ -14,13 +13,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

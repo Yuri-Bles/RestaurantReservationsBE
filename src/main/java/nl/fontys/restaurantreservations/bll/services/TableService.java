@@ -73,23 +73,13 @@ public class TableService
     public ResponseEntity<?> updateTable(String oldTableNumber, TableDTO dto)
     {
         TableDomain domain;
-
-        try
-        { domain = getTableByTableNumber(oldTableNumber); }
-        catch (TableNotFoundException ex)
-        { return ResponseEntityCreator.returnResponseEntity(404, "Table doesn't exist"); }
-        catch (Exception ex)
-        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Please try again later. " + ex); }
+        domain = getTableByTableNumber(oldTableNumber);
 
         domain.setTableNumber(dto.tableNumber());
         domain.setCapacity(dto.capacity());
         domain.setStatus(dto.status());
 
-        try
-        { repo.save(domain); }
-        catch (Exception ex)
-        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later. " + ex); }
-
+        repo.save(domain);
         return ResponseEntityCreator.returnResponseEntity(200, "Table successfully updated.");
     }
 
