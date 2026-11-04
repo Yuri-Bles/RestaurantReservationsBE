@@ -85,21 +85,10 @@ public class TableService
 
     public ResponseEntity<?> deleteTable(String tableNumber)
     {
-        TableDomain domain;
-        try
-        { domain = getTableByTableNumber(tableNumber); }
-        catch (TableNotFoundException ex)
-        { return ResponseEntityCreator.returnResponseEntity(404, "Table does not exist."); }
-        catch (Exception ex)
-        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later. " + ex); }
-
+        TableDomain domain = getTableByTableNumber(tableNumber);
         domain.setStatus(TableStatus.Removed);
 
-        try
-        { repo.save(domain); }
-        catch (Exception ex)
-        { return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong. Try again later."); }
-
+        repo.save(domain);
         return ResponseEntityCreator.returnResponseEntity(200, "Table successfully removed.");
     }
 
