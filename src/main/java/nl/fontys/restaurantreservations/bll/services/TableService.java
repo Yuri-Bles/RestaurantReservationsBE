@@ -4,6 +4,7 @@ import nl.fontys.restaurantreservations.api.dtos.TableDTO;
 import nl.fontys.restaurantreservations.api.mappers.TableDomainDTOMapper;
 import nl.fontys.restaurantreservations.bll.domains.TableDomain;
 import nl.fontys.restaurantreservations.bll.enums.TableStatus;
+import nl.fontys.restaurantreservations.bll.exceptions.EmptyTableListException;
 import nl.fontys.restaurantreservations.bll.exceptions.TableNotFoundException;
 
 import nl.fontys.restaurantreservations.dal.interfaces.repo.TableRepository;
@@ -28,18 +29,12 @@ public class TableService
     public ResponseEntity<?> getAllActiveTables()
     {
         List<TableDomain> tables;
-        try {
-            tables = repo.findAllByStatus(TableStatus.Active);
-        }
-        catch (Exception ex) {
-            return ResponseEntityCreator.returnResponseEntity(500, "Something went wrong internally.");
-        }
+        tables = repo.findAllByStatus(TableStatus.Active);
 
         if (tables.isEmpty())
-        { return ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables"); }
+        { throw new EmptyTableListException("Failed to get tables"); }
 
         List<TableDTO> dtos = mapper.listToDTO(tables);
-
         return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", dtos);
     }
 

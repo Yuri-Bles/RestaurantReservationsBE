@@ -40,4 +40,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleNotFound(TableNotFoundException ex) {
         return ResponseEntityCreator.returnResponseEntity(404, ex.getMessage());
     }
+
+    @ExceptionHandler(EmptyTableListException.class)
+    public ResponseEntity<?> handleNotFound(EmptyTableListException ex) {
+        return ResponseEntityCreator.returnResponseEntity(500, ex.getMessage());
+    }
 }
