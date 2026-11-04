@@ -1,6 +1,7 @@
 package nl.fontys.restaurantreservations.bll.exceptions;
 
 import nl.fontys.restaurantreservations.api.dtos.ApiMessage;
+import nl.fontys.restaurantreservations.bll.services.ResponseEntityCreator;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +24,11 @@ public class GlobalExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
 
-        int status = 400;
+        return ResponseEntityCreator.returnResponseEntity(400, "Validation failed.", errors);
+    }
 
-        return ResponseEntity
-                .status(status)
-                .body(new ApiMessage(
-                        status,
-                        "Validation failed.",
-                        errors
-                ));
+    @ExceptionHandler(TableNotFoundException.class)
+    public ResponseEntity<?> handleNotFound(TableNotFoundException ex) {
+        return ResponseEntityCreator.returnResponseEntity(404, ex.getMessage());
     }
 }
