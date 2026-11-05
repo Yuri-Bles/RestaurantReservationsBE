@@ -29,7 +29,7 @@ public class TableController
         return tableService.getAllActiveTables();
     }
 
-    @GetMapping("/existing")
+    @GetMapping
     public ResponseEntity<?> getAllExistingTables() //Existing means any table without the Removed status.
     {
         return tableService.getAllExistingTables();

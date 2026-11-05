@@ -4,6 +4,7 @@ import nl.fontys.restaurantreservations.api.mappers.TableDomainDTOMapper;
 import nl.fontys.restaurantreservations.bll.domains.TableDomain;
 import nl.fontys.restaurantreservations.api.dtos.TableDTO;
 import nl.fontys.restaurantreservations.bll.enums.TableStatus;
+import nl.fontys.restaurantreservations.bll.exceptions.TableNotFoundException;
 import nl.fontys.restaurantreservations.dal.repositories.TableRepositoryImpl;
 import nl.fontys.restaurantreservations.bll.services.TableService;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -79,56 +81,13 @@ class UpdateTableTest
                 .thenReturn(Optional.empty());
 
         // Act
-        ResponseEntity<?> response = service.updateTable(tableNumber, TableDTO);
+        TableNotFoundException exception = assertThrows(
+                TableNotFoundException.class,
+                () -> service.updateTable(tableNumber, TableDTO)
+        );
 
         // Assert
-        assertEquals(404, response.getStatusCode().value());
+        assertEquals("Table doesn't exist", exception.getMessage());
         verify(repo, never()).save(any(TableDomain.class));
-    }
-
-    @Test
-    void updateTable_shouldReturn500_whenFailsToGetTable()
-    {
-        // Arrange
-        String oldTableNumber = "T01";
-        TableDomain existing = new TableDomain(oldTableNumber, 2, TableStatus.Inactive);
-        TableDomain expected = new TableDomain("T02", 4, TableStatus.Active);
-        TableDTO TableDTO = mapper.toDTO(expected);
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
-                .thenThrow(new RuntimeException());
-
-        // Act
-        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO);
-
-        // Assert
-        assertEquals(500, response.getStatusCode().value());
-    }
-
-    @Test
-    void updateTable_shouldReturn500_whenSavingModelFails()
-    {
-        // Arrange
-        String oldTableNumber = "T01";
-        TableDomain existing = new TableDomain(oldTableNumber, 2, TableStatus.Inactive);
-        TableDomain expected = new TableDomain("T02", 4, TableStatus.Active);
-        TableDTO TableDTO = mapper.toDTO(expected);
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
-                .thenReturn(Optional.empty());
-
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
-                .thenReturn(Optional.of(existing));
-
-        doThrow(new RuntimeException())
-                .when(repo)
-                .save(any(TableDomain.class));
-
-        // Act
-        ResponseEntity<?> response = service.updateTable(oldTableNumber, TableDTO);
-
-        // Assert
-        assertEquals(500, response.getStatusCode().value());
-        verify(repo).save(any(TableDomain.class));
     }
 }

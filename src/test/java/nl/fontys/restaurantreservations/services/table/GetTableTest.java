@@ -4,6 +4,7 @@ import nl.fontys.restaurantreservations.api.mappers.TableDomainDTOMapper;
 import nl.fontys.restaurantreservations.bll.domains.TableDomain;
 import nl.fontys.restaurantreservations.api.dtos.TableDTO;
 import nl.fontys.restaurantreservations.bll.enums.TableStatus;
+import nl.fontys.restaurantreservations.bll.exceptions.EmptyTableListException;
 import nl.fontys.restaurantreservations.dal.repositories.TableRepositoryImpl;
 import nl.fontys.restaurantreservations.bll.services.ResponseEntityCreator;
 import nl.fontys.restaurantreservations.bll.services.TableService;
@@ -62,25 +63,18 @@ class GetTableTest
     void getAllActiveTables_shouldReturn500_whenRepoDoesntReturnTables()
     {
         // Arrange
-        TableDomain tableDomain1 = new TableDomain("T01", 4, TableStatus.Active);
-        TableDomain tableDomain2 = new TableDomain("T02", 6, TableStatus.Active);
-        TableDomain tableDomain3 = new TableDomain("T03", 6, TableStatus.Active);
-        TableDTO table1 = mapper.toDTO(tableDomain1);
-        TableDTO table2 = mapper.toDTO(tableDomain2);
-        TableDTO table3 = mapper.toDTO(tableDomain3);
-
-        List<TableDTO> dtoList = List.of(table1, table2, table3);
-        ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables");
-
         List<TableDomain> repoReturn = List.of();
 
         when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
 
         // Act
-        ResponseEntity<?> actual = service.getAllActiveTables();
+        EmptyTableListException exception = assertThrows(
+                EmptyTableListException.class,
+                () -> service.getAllActiveTables()
+        );
 
         // Assert
-        assertEquals(expected, actual);
+        assertEquals("Failed to get tables", exception.getMessage());
     }
 
     @Test
@@ -117,17 +111,18 @@ class GetTableTest
     void getAllExistingTables_shouldReturn500_whenRepoDoesntReturnTables()
     {
         // Arrange
-        ResponseEntity<?> expected = ResponseEntityCreator.returnResponseEntity(500, "Failed to get tables");
-
         List<TableDomain> repoReturn = List.of();
 
         when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
         when(repo.findAllByStatus(TableStatus.Inactive)).thenReturn(repoReturn);
 
         // Act
-        ResponseEntity<?> actual = service.getAllExistingTables();
+        EmptyTableListException exception = assertThrows(
+                EmptyTableListException.class,
+                () -> service.getAllExistingTables()
+        );
 
         // Assert
-        assertEquals(expected, actual);
+        assertEquals("Failed to get tables", exception.getMessage());
     }
 }
