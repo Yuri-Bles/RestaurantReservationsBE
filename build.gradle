@@ -51,7 +51,7 @@ sonar {
     properties {
         property "sonar.projectKey", "Yuri-Bles_RestaurantReservationsBE"
         property "sonar.projectName", "RestaurantReservationsBE"
-        property "sonar.organization", "Yuri-Bles"
+        property "sonar.organization", "yuri-bles"
         property "sonar.host.url", "https://sonarcloud.io"
     }
 }
