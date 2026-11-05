@@ -133,6 +133,17 @@ jobs:
           name: sonar-artifacts
           path: build/
 
+      - name: Verify downloaded SonarQube artifacts
+        run: |
+          echo "Checking compiled classes..."
+          find build/classes -type f | head -20
+
+          echo "Checking JaCoCo report..."
+          ls -lah build/reports/jacoco/test/
+
+          echo "Checking report contents..."
+          head -20 build/reports/jacoco/test/jacocoTestReport.xml
+
       # Run SonarQube analysis (will pick up coverage.xml)
       - name: Run SonarQube analysis
         env:
