@@ -3,6 +3,9 @@ plugins {
     id 'org.springframework.boot' version '4.1.1'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'checkstyle'
+
+    id 'org.sonarqube' version '7.5.0.8588'
+    id 'jacoco'
 }
 
 group = 'nl.fontys'
@@ -42,4 +45,22 @@ checkstyle {
 
 tasks.named('checkstyleTest') {
     enabled = false
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "Yuri-Bles_RestaurantReservationsBE"
+        property "sonar.projectName", "RestaurantReservationsBE"
+        property "sonar.organization", "Yuri-Bles"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        xml.required = true
+        html.required = true
+    }
 }
