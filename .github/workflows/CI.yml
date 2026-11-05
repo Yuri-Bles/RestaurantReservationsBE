@@ -133,6 +133,7 @@ jobs:
           name: sonar-artifacts
           path: build/
 
+      # Remove in future
       - name: Verify downloaded SonarQube artifacts
         run: |
           echo "Checking compiled classes..."
@@ -143,6 +144,19 @@ jobs:
 
           echo "Checking report contents..."
           head -20 build/reports/jacoco/test/jacocoTestReport.xml
+
+      # Remove in future
+      - name: Check SonarQube coverage configuration
+        run: |
+          echo "Checking coverage report..."
+          test -s build/reports/jacoco/test/jacocoTestReport.xml
+          
+          echo "Checking coverage counters..."
+          grep -o '<counter type="LINE"[^>]*/>' \
+            build/reports/jacoco/test/jacocoTestReport.xml | head -10
+          
+          echo "Checking source files..."
+          find src/main -type f | head -20
 
       # Run SonarQube analysis (will pick up coverage.xml)
       - name: Run SonarQube analysis
