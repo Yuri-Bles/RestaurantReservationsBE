@@ -9,6 +9,6 @@ class CITest
     @Test
     public void dummyTestSucceed()
     {
-        assertEquals(2, 2);
+        assertEquals(1, 1);
     }
 }
