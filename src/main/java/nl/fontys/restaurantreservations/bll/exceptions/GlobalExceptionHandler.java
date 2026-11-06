@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmptyTableListException.class)
     public ResponseEntity<?> handleEmptyList(EmptyTableListException ex) {
-        return ResponseEntityCreator.returnResponseEntity(200, ex.getMessage());
+        return ResponseEntityCreator.returnResponseEntity(500, ex.getMessage());
     }
 
     @ExceptionHandler(TableNumberAlreadyInUseException.class)
