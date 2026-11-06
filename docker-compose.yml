@@ -12,7 +12,7 @@ services:
       - source: app_db_password
         target: DB_PASSWORD
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - restaurant-reservation-data:/var/lib/postgresql/data
 
