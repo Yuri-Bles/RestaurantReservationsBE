@@ -35,6 +35,7 @@ public class TableController
     @GetMapping
     public ResponseEntity<?> getAllExistingTables() //Existing means any table without the Removed status.
     {
+        System.out.println("GET /apiv1/tables REACHED CONTROLLER");
         return tableService.getAllExistingTables();
     }
 
