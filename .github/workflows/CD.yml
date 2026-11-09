@@ -60,7 +60,7 @@ jobs:
             --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
             -t "$IMAGE:main" \
             -t "$IMAGE:$COMMIT_SHA" .
-          
+
       - name: Verify Docker image
         run: docker image inspect "$IMAGE:main"
 

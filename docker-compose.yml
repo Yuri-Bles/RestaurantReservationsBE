@@ -12,9 +12,15 @@ services:
       - source: app_db_password
         target: DB_PASSWORD
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - restaurant-reservation-data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\"" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   backend:
     image: ${BACKEND_IMAGE}:main
@@ -29,7 +35,8 @@ services:
       - source: app_db_password
         target: spring.datasource.password
     depends_on:
-      - database
+      database:
+        condition: service_healthy
 
 secrets:
   app_db_username:

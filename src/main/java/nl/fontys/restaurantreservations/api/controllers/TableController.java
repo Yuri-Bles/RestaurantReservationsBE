@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/apiv1/tables")
-@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = {
+//        "http://localhost:5173",
+//        "http://192.168.193.96:5174"
+//})
 public class TableController
 {
     private final TableService tableService;
@@ -32,6 +35,7 @@ public class TableController
     @GetMapping
     public ResponseEntity<?> getAllExistingTables() //Existing means any table without the Removed status.
     {
+        System.out.println("GET /apiv1/tables REACHED CONTROLLER");
         return tableService.getAllExistingTables();
     }
 
