@@ -35,6 +35,11 @@ public class GlobalExceptionHandler {
         return ResponseEntityCreator.returnResponseEntity(400, "Validation failed.", errors);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntityCreator.returnResponseEntity(400, ex.getMessage());
+    }
+
     @ExceptionHandler(TableNotFoundException.class)
     public ResponseEntity<?> handleNotFound(TableNotFoundException ex) {
         return ResponseEntityCreator.returnResponseEntity(404, ex.getMessage());
