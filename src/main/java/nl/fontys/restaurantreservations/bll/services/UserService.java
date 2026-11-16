@@ -3,7 +3,9 @@ package nl.fontys.restaurantreservations.bll.services;
 import nl.fontys.restaurantreservations.bll.domains.UserDomain;
 import nl.fontys.restaurantreservations.dal.interfaces.repo.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService {
     private final UserRepository repo;
     private final PasswordService ps = new PasswordService();

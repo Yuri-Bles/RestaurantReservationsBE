@@ -2,7 +2,9 @@ package nl.fontys.restaurantreservations.dal.mappers;
 
 import nl.fontys.restaurantreservations.bll.domains.UserDomain;
 import nl.fontys.restaurantreservations.dal.entities.UserEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserDomainEntityMapper {
     public UserDomain toDomain(UserEntity entity) {
         return new UserDomain(
