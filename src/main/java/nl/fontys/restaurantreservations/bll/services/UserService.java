@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 public class UserService {
     private final UserRepository repo;
-    private PasswordService ps;
+    private final PasswordService ps = new PasswordService();
 
     public UserService(UserRepository repo) {
         this.repo = repo;
