@@ -1,7 +1,6 @@
 package nl.fontys.restaurantreservations.api.dtos.requests.user;
 
 import jakarta.validation.constraints.NotBlank;
-import nl.fontys.restaurantreservations.bll.enums.UserRole;
 
 public record CreateUserRequest(
         @NotBlank(message = "E-mail is required")

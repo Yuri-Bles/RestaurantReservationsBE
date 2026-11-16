@@ -5,9 +5,13 @@ import nl.fontys.restaurantreservations.bll.enums.UserRole;
 public class UserDomain {
 
     private final Long id;
+
     private String email;
+
     private String name;
+
     private String password;
+
     private UserRole role;
 
     public UserDomain(Long id, String email, String name, String password, UserRole role) {

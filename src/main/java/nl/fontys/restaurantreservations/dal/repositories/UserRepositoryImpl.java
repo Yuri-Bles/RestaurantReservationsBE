@@ -7,7 +7,6 @@ import nl.fontys.restaurantreservations.dal.interfaces.repo.UserRepository;
 import nl.fontys.restaurantreservations.dal.mappers.UserDomainEntityMapper;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository

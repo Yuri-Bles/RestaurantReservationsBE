@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
     private final UserRepository repo;
+
     private final PasswordService ps = new PasswordService();
 
     public UserService(UserRepository repo) {
