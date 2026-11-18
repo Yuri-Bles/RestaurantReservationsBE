@@ -13,7 +13,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
@@ -48,11 +47,6 @@ class UpdateTableTest
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
                 .thenReturn(Optional.of(existing));
-
-        doAnswer(invocation -> {
-            TableDomain savedDomain = invocation.getArgument(0);
-            return null;
-        }).when(repo).save(any(TableDomain.class));
 
         // Act
         service.updateTable(oldTableNumber, TableDTO);

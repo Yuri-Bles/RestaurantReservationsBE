@@ -146,7 +146,4 @@ jobs:
             up -d --pull always --no-build
 
           # Show running containers
-          docker compose \
-            -p restaurant-reservations-be \
-            -f docker-compose.yml \
-            ps
+          docker ps

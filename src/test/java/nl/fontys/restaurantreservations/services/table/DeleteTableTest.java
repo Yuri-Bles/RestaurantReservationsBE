@@ -13,13 +13,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,10 +46,6 @@ class DeleteTableTest
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
                 .thenReturn(Optional.of(existing));
 
-        doAnswer(invocation -> invocation.getArgument(0))
-                .when(repo)
-                .save(any(TableDomain.class));
-
         // Act
         service.deleteTable(TableDTO.tableNumber());
 
@@ -72,7 +66,6 @@ class DeleteTableTest
         TableDomain existing = new TableDomain("T02", 4, TableStatus.Inactive);
         TableDomain expected = new TableDomain("T02", 4, TableStatus.Removed);
         TableDTO TableDTO = mapper.toDTO(expected);
-        ArgumentCaptor<TableDomain> captor = ArgumentCaptor.forClass(TableDomain.class);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
                 .thenReturn(Optional.empty());
