@@ -1,5 +1,6 @@
 package nl.fontys.restaurantreservations.bll.exceptions;
 
+import nl.fontys.restaurantreservations.api.dtos.ApiMessage;
 import nl.fontys.restaurantreservations.bll.services.ResponseEntityCreator;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -14,7 +15,7 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGeneralException(Exception ex) {
+    public ResponseEntity<ApiMessage> handleGeneralException(Exception ex) {
         return ResponseEntityCreator.returnResponseEntity(
                 500,
                 "Something went wrong internally, please try again later",
@@ -23,7 +24,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidationErrors(
+    public ResponseEntity<ApiMessage> handleValidationErrors(
             MethodArgumentNotValidException exception)
     {
         List<String> errors = exception.getBindingResult()
@@ -36,17 +37,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(TableNotFoundException.class)
-    public ResponseEntity<?> handleNotFound(TableNotFoundException ex) {
+    public ResponseEntity<ApiMessage> handleNotFound(TableNotFoundException ex) {
         return ResponseEntityCreator.returnResponseEntity(404, ex.getMessage());
     }
 
     @ExceptionHandler(EmptyTableListException.class)
-    public ResponseEntity<?> handleEmptyList(EmptyTableListException ex) {
+    public ResponseEntity<ApiMessage> handleEmptyList(EmptyTableListException ex) {
         return ResponseEntityCreator.returnResponseEntity(500, ex.getMessage());
     }
 
     @ExceptionHandler(TableNumberAlreadyInUseException.class)
-    public ResponseEntity<?> handleAlreadyInUse(TableNumberAlreadyInUseException ex) {
+    public ResponseEntity<ApiMessage> handleAlreadyInUse(TableNumberAlreadyInUseException ex) {
         return ResponseEntityCreator.returnResponseEntity(400, ex.getMessage());
     }
 }

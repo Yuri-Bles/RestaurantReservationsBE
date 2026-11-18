@@ -39,7 +39,7 @@ class UpdateTableTest
         String oldTableNumber = "T01";
         TableDomain existing = new TableDomain(oldTableNumber, 2, TableStatus.INACTIVE);
         TableDomain expected = new TableDomain("T02", 4, TableStatus.ACTIVE);
-        TableDTO TableDTO = mapper.toDTO(expected);
+        TableDTO tableDTO = mapper.toDTO(expected);
         ArgumentCaptor<TableDomain> captor = ArgumentCaptor.forClass(TableDomain.class);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.ACTIVE))
@@ -54,7 +54,7 @@ class UpdateTableTest
         }).when(repo).save(any(TableDomain.class));
 
         // Act
-        service.updateTable(oldTableNumber, TableDTO);
+        service.updateTable(oldTableNumber, tableDTO);
 
         // Assert
         verify(repo).save(captor.capture());
@@ -70,7 +70,7 @@ class UpdateTableTest
     void updateTable_shouldReturn404_whenTableDoesNotExist()
     {
         // Arrange
-        TableDTO TableDTO = new TableDTO("T02", 4, TableStatus.ACTIVE);
+        TableDTO tableDTO = new TableDTO("T02", 4, TableStatus.ACTIVE);
         String tableNumber = "T01";
 
         when(repo.findByTableNumberAndStatus(tableNumber, TableStatus.ACTIVE))
@@ -82,7 +82,7 @@ class UpdateTableTest
         // Act
         TableNotFoundException exception = assertThrows(
                 TableNotFoundException.class,
-                () -> service.updateTable(tableNumber, TableDTO)
+                () -> service.updateTable(tableNumber, tableDTO)
         );
 
         // Assert

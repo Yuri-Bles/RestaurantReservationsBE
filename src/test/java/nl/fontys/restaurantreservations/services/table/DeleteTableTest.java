@@ -38,7 +38,7 @@ class DeleteTableTest
         // Arrange
         TableDomain existing = new TableDomain("T02", 4, TableStatus.INACTIVE);
         TableDomain expected = new TableDomain("T02", 4, TableStatus.REMOVED);
-        TableDTO TableDTO = mapper.toDTO(expected);
+        TableDTO tableDTO = mapper.toDTO(expected);
         ArgumentCaptor<TableDomain> captor = ArgumentCaptor.forClass(TableDomain.class);
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.ACTIVE))
@@ -52,7 +52,7 @@ class DeleteTableTest
                 .save(any(TableDomain.class));
 
         // Act
-        service.deleteTable(TableDTO.tableNumber());
+        service.deleteTable(tableDTO.tableNumber());
 
         // Assert
         verify(repo).save(captor.capture());
@@ -70,8 +70,8 @@ class DeleteTableTest
         // Arrange
         TableDomain existing = new TableDomain("T02", 4, TableStatus.INACTIVE);
         TableDomain expected = new TableDomain("T02", 4, TableStatus.REMOVED);
-        TableDTO TableDTO = mapper.toDTO(expected);
-        ArgumentCaptor<TableDomain> captor = ArgumentCaptor.forClass(TableDomain.class);
+        TableDTO tableDTO = mapper.toDTO(expected);
+        String tableNumber = tableDTO.tableNumber();
 
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.ACTIVE))
                 .thenReturn(Optional.empty());
@@ -82,7 +82,7 @@ class DeleteTableTest
         // Act
         TableNotFoundException exception = assertThrows(
                 TableNotFoundException.class,
-                () -> service.deleteTable(TableDTO.tableNumber())
+                () -> service.deleteTable(tableNumber)
         );
 
         // Assert
