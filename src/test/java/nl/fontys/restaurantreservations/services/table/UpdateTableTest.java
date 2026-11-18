@@ -13,7 +13,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
@@ -38,15 +37,15 @@ class UpdateTableTest
     {
         // Arrange
         String oldTableNumber = "T01";
-        TableDomain existing = new TableDomain(oldTableNumber, 2, TableStatus.Inactive);
-        TableDomain expected = new TableDomain("T02", 4, TableStatus.Active);
+        TableDomain existing = new TableDomain(oldTableNumber, 2, TableStatus.INACTIVE);
+        TableDomain expected = new TableDomain("T02", 4, TableStatus.ACTIVE);
         TableDTO TableDTO = mapper.toDTO(expected);
         ArgumentCaptor<TableDomain> captor = ArgumentCaptor.forClass(TableDomain.class);
 
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
+        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.ACTIVE))
                 .thenReturn(Optional.empty());
 
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
+        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.INACTIVE))
                 .thenReturn(Optional.of(existing));
 
         doAnswer(invocation -> {
@@ -71,13 +70,13 @@ class UpdateTableTest
     void updateTable_shouldReturn404_whenTableDoesNotExist()
     {
         // Arrange
-        TableDTO TableDTO = new TableDTO("T02", 4, TableStatus.Active);
+        TableDTO TableDTO = new TableDTO("T02", 4, TableStatus.ACTIVE);
         String tableNumber = "T01";
 
-        when(repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active))
+        when(repo.findByTableNumberAndStatus(tableNumber, TableStatus.ACTIVE))
                 .thenReturn(Optional.empty());
 
-        when(repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive))
+        when(repo.findByTableNumberAndStatus(tableNumber, TableStatus.INACTIVE))
                 .thenReturn(Optional.empty());
 
         // Act

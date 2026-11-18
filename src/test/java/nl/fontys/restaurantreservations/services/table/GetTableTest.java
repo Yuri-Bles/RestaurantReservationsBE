@@ -35,9 +35,9 @@ class GetTableTest
     void getAllActiveTables_shouldReturnActiveTables()
     {
         // Arrange
-        TableDomain tableDomain1 = new TableDomain("T01", 4, TableStatus.Active);
-        TableDomain tableDomain2 = new TableDomain("T02", 6, TableStatus.Active);
-        TableDomain tableDomain3 = new TableDomain("T03", 6, TableStatus.Active);
+        TableDomain tableDomain1 = new TableDomain("T01", 4, TableStatus.ACTIVE);
+        TableDomain tableDomain2 = new TableDomain("T02", 6, TableStatus.ACTIVE);
+        TableDomain tableDomain3 = new TableDomain("T03", 6, TableStatus.ACTIVE);
         TableDTO table1 = mapper.toDTO(tableDomain1);
         TableDTO table2 = mapper.toDTO(tableDomain2);
         TableDTO table3 = mapper.toDTO(tableDomain3);
@@ -50,7 +50,7 @@ class GetTableTest
 
         List<TableDomain> repoReturn = List.of(tableDomain1, tableDomain2, tableDomain3);
 
-        when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
+        when(repo.findAllByStatus(TableStatus.ACTIVE)).thenReturn(repoReturn);
 
         // Act
         ResponseEntity<?> actual = service.getAllActiveTables();
@@ -65,7 +65,7 @@ class GetTableTest
         // Arrange
         List<TableDomain> repoReturn = List.of();
 
-        when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
+        when(repo.findAllByStatus(TableStatus.ACTIVE)).thenReturn(repoReturn);
 
         // Act
         EmptyTableListException exception = assertThrows(
@@ -81,9 +81,9 @@ class GetTableTest
     void getAllExistingTables_shouldReturnExistingTables()
     {
         // Arrange
-        TableDomain tableDomain1 = new TableDomain("T01", 4, TableStatus.Active);
-        TableDomain tableDomain2 = new TableDomain("T02", 6, TableStatus.Inactive);
-        TableDomain tableDomain3 = new TableDomain("T03", 6, TableStatus.Inactive);
+        TableDomain tableDomain1 = new TableDomain("T01", 4, TableStatus.ACTIVE);
+        TableDomain tableDomain2 = new TableDomain("T02", 6, TableStatus.INACTIVE);
+        TableDomain tableDomain3 = new TableDomain("T03", 6, TableStatus.INACTIVE);
         TableDTO table1 = mapper.toDTO(tableDomain1);
         TableDTO table2 = mapper.toDTO(tableDomain2);
         TableDTO table3 = mapper.toDTO(tableDomain3);
@@ -97,8 +97,8 @@ class GetTableTest
         List<TableDomain> repoReturnActive = List.of(tableDomain1);
         List<TableDomain> repoReturnInactive = List.of(tableDomain2, tableDomain3);
 
-        when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturnActive);
-        when(repo.findAllByStatus(TableStatus.Inactive)).thenReturn(repoReturnInactive);
+        when(repo.findAllByStatus(TableStatus.ACTIVE)).thenReturn(repoReturnActive);
+        when(repo.findAllByStatus(TableStatus.INACTIVE)).thenReturn(repoReturnInactive);
 
         // Act
         ResponseEntity<?> actual = service.getAllExistingTables();
@@ -113,8 +113,8 @@ class GetTableTest
         // Arrange
         List<TableDomain> repoReturn = List.of();
 
-        when(repo.findAllByStatus(TableStatus.Active)).thenReturn(repoReturn);
-        when(repo.findAllByStatus(TableStatus.Inactive)).thenReturn(repoReturn);
+        when(repo.findAllByStatus(TableStatus.ACTIVE)).thenReturn(repoReturn);
+        when(repo.findAllByStatus(TableStatus.INACTIVE)).thenReturn(repoReturn);
 
         // Act
         EmptyTableListException exception = assertThrows(

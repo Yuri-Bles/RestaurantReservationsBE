@@ -13,7 +13,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
@@ -37,15 +36,15 @@ class DeleteTableTest
     void deleteTable_shouldRemoveTable_whenValuesAreValidAndTableExists()
     {
         // Arrange
-        TableDomain existing = new TableDomain("T02", 4, TableStatus.Inactive);
-        TableDomain expected = new TableDomain("T02", 4, TableStatus.Removed);
+        TableDomain existing = new TableDomain("T02", 4, TableStatus.INACTIVE);
+        TableDomain expected = new TableDomain("T02", 4, TableStatus.REMOVED);
         TableDTO TableDTO = mapper.toDTO(expected);
         ArgumentCaptor<TableDomain> captor = ArgumentCaptor.forClass(TableDomain.class);
 
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
+        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.ACTIVE))
                 .thenReturn(Optional.empty());
 
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
+        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.INACTIVE))
                 .thenReturn(Optional.of(existing));
 
         doAnswer(invocation -> invocation.getArgument(0))
@@ -69,15 +68,15 @@ class DeleteTableTest
     void deleteTable_shouldReturn404_whenTableNumberIsInvalid()
     {
         // Arrange
-        TableDomain existing = new TableDomain("T02", 4, TableStatus.Inactive);
-        TableDomain expected = new TableDomain("T02", 4, TableStatus.Removed);
+        TableDomain existing = new TableDomain("T02", 4, TableStatus.INACTIVE);
+        TableDomain expected = new TableDomain("T02", 4, TableStatus.REMOVED);
         TableDTO TableDTO = mapper.toDTO(expected);
         ArgumentCaptor<TableDomain> captor = ArgumentCaptor.forClass(TableDomain.class);
 
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Active))
+        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.ACTIVE))
                 .thenReturn(Optional.empty());
 
-        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.Inactive))
+        when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.INACTIVE))
                 .thenReturn(Optional.empty());
 
         // Act
