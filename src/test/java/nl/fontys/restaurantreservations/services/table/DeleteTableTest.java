@@ -47,10 +47,6 @@ class DeleteTableTest
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.INACTIVE))
                 .thenReturn(Optional.of(existing));
 
-        doAnswer(invocation -> invocation.getArgument(0))
-                .when(repo)
-                .save(any(TableDomain.class));
-
         // Act
         service.deleteTable(tableDTO.tableNumber());
 

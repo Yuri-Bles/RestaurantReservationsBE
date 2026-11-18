@@ -48,11 +48,6 @@ class UpdateTableTest
         when(repo.findByTableNumberAndStatus(existing.getTableNumber(), TableStatus.INACTIVE))
                 .thenReturn(Optional.of(existing));
 
-        doAnswer(invocation -> {
-            TableDomain savedDomain = invocation.getArgument(0);
-            return null;
-        }).when(repo).save(any(TableDomain.class));
-
         // Act
         service.updateTable(oldTableNumber, tableDTO);
 
