@@ -1,5 +1,6 @@
 package nl.fontys.restaurantreservations.bll.services;
 
+import nl.fontys.restaurantreservations.api.dtos.ApiMessage;
 import nl.fontys.restaurantreservations.api.dtos.TableDTO;
 import nl.fontys.restaurantreservations.api.mappers.TableDomainDTOMapper;
 import nl.fontys.restaurantreservations.bll.domains.TableDomain;
@@ -27,7 +28,7 @@ public class TableService
         this.repo = repo;
     }
 
-    public ResponseEntity<?> getAllActiveTables()
+    public ResponseEntity<ApiMessage> getAllActiveTables()
     {
         List<TableDomain> tables;
         tables = repo.findAllByStatus(TableStatus.Active);
@@ -39,7 +40,7 @@ public class TableService
         return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", dtos);
     }
 
-    public ResponseEntity<?> getAllExistingTables()
+    public ResponseEntity<ApiMessage> getAllExistingTables()
     {
         List<TableDomain> tables = Stream.concat(
                 repo.findAllByStatus(TableStatus.Active).stream(),
@@ -58,7 +59,7 @@ public class TableService
         return ResponseEntityCreator.returnResponseEntity(200, "Got tables successfully", dtos);
     }
 
-    public ResponseEntity<?> createTable(TableDTO dto)
+    public ResponseEntity<ApiMessage> createTable(TableDTO dto)
     {
         TableDomain domain = mapper.toDomain(dto);
 
@@ -70,7 +71,7 @@ public class TableService
         return ResponseEntityCreator.returnResponseEntity(201, "Table successfully created.");
     }
 
-    public ResponseEntity<?> updateTable(String oldTableNumber, TableDTO dto)
+    public ResponseEntity<ApiMessage> updateTable(String oldTableNumber, TableDTO dto)
     {
         TableDomain domain;
         domain = getTableByTableNumber(oldTableNumber);
@@ -83,7 +84,7 @@ public class TableService
         return ResponseEntityCreator.returnResponseEntity(200, "Table successfully updated.");
     }
 
-    public ResponseEntity<?> deleteTable(String tableNumber)
+    public ResponseEntity<ApiMessage> deleteTable(String tableNumber)
     {
         TableDomain domain = getTableByTableNumber(tableNumber);
         domain.setStatus(TableStatus.Removed);

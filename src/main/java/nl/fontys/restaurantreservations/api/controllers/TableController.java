@@ -2,6 +2,7 @@ package nl.fontys.restaurantreservations.api.controllers;
 
 import jakarta.validation.Valid;
 
+import nl.fontys.restaurantreservations.api.dtos.ApiMessage;
 import nl.fontys.restaurantreservations.api.dtos.TableDTO;
 import nl.fontys.restaurantreservations.api.dtos.requests.table.CreateTableRequest;
 import nl.fontys.restaurantreservations.api.dtos.requests.table.DeleteTableRequest;
@@ -27,34 +28,34 @@ public class TableController
     }
 
     @GetMapping("/active")
-    public ResponseEntity<?> getAllActiveTables()
+    public ResponseEntity<ApiMessage> getAllActiveTables()
     {
         return tableService.getAllActiveTables();
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllExistingTables() //Existing means any table without the Removed status.
+    public ResponseEntity<ApiMessage> getAllExistingTables() //Existing means any table without the Removed status.
     {
         System.out.println("GET /apiv1/tables REACHED CONTROLLER");
         return tableService.getAllExistingTables();
     }
 
     @PostMapping
-    public ResponseEntity<?> createTable(@Valid @RequestBody CreateTableRequest request)
+    public ResponseEntity<ApiMessage> createTable(@Valid @RequestBody CreateTableRequest request)
     {
         TableDTO dto = new TableDTO(request.tableNumber(), request.capacity(), request.status());
         return tableService.createTable(dto);
     }
 
     @PutMapping
-    public ResponseEntity<?> updateTable(@Valid @RequestBody UpdateTableRequest request)
+    public ResponseEntity<ApiMessage> updateTable(@Valid @RequestBody UpdateTableRequest request)
     {
         TableDTO dto = new TableDTO(request.newTableNumber(), request.capacity(), request.status());
         return tableService.updateTable(request.oldTableNumber(), dto);
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteTable(@Valid @RequestBody DeleteTableRequest request)
+    public ResponseEntity<ApiMessage> deleteTable(@Valid @RequestBody DeleteTableRequest request)
     {
         return tableService.deleteTable(request.tableNumber());
     }
