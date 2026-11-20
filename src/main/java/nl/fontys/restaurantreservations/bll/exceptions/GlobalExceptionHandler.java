@@ -45,6 +45,11 @@ public class GlobalExceptionHandler {
         return ResponseEntityCreator.returnResponseEntity(404, ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<?> handleNotFound(InvalidCredentialsException ex) {
+        return ResponseEntityCreator.returnResponseEntity(401, ex.getMessage());
+    }
+
     @ExceptionHandler(EmptyTableListException.class)
     public ResponseEntity<?> handleEmptyList(EmptyTableListException ex) {
         return ResponseEntityCreator.returnResponseEntity(500, ex.getMessage());

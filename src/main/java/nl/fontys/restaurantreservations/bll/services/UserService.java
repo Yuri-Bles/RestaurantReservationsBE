@@ -1,6 +1,8 @@
 package nl.fontys.restaurantreservations.bll.services;
 
+import nl.fontys.restaurantreservations.api.dtos.ApiMessage;
 import nl.fontys.restaurantreservations.bll.domains.UserDomain;
+import nl.fontys.restaurantreservations.bll.exceptions.InvalidCredentialsException;
 import nl.fontys.restaurantreservations.dal.interfaces.repo.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,7 @@ public class UserService {
         this.repo = repo;
     }
 
-    public ResponseEntity<?> createUser(UserDomain domain) {
+    public ResponseEntity<ApiMessage> createUser(UserDomain domain) {
         if (domain.getRole() == null) {
             throw new IllegalArgumentException("User role is required.");
         }
@@ -27,5 +29,23 @@ public class UserService {
 
         repo.save(domain);
         return ResponseEntityCreator.returnResponseEntity(201, "Account successfully created.");
+    }
+
+    public ResponseEntity<ApiMessage> login(UserDomain domain) {
+        if (domain.getEmail() == null) {
+            throw new IllegalArgumentException("Email is required.");
+        }
+        if (domain.getPassword() == null) {
+            throw new IllegalArgumentException("Password is required.");
+        }
+
+        UserDomain dbDomain = repo.findByEmail(domain.getEmail()).orElseThrow(() ->
+                new InvalidCredentialsException("Email or password is incorrect."));
+
+        if (!ps.verify(domain.getPassword(), dbDomain.getPassword())) {
+            throw new InvalidCredentialsException("Email or Password is incorrect.");
+        }
+        
+        return ResponseEntityCreator.returnResponseEntity(200, "Logged in successfully.");
     }
 }
