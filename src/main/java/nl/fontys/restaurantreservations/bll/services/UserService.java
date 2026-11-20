@@ -1,6 +1,7 @@
 package nl.fontys.restaurantreservations.bll.services;
 
 import nl.fontys.restaurantreservations.api.dtos.ApiMessage;
+import nl.fontys.restaurantreservations.api.dtos.responses.user.AuthResponse;
 import nl.fontys.restaurantreservations.bll.domains.UserDomain;
 import nl.fontys.restaurantreservations.bll.exceptions.InvalidCredentialsException;
 import nl.fontys.restaurantreservations.dal.interfaces.repo.UserRepository;
@@ -13,8 +14,11 @@ public class UserService {
 
     private final PasswordService ps = new PasswordService();
 
-    public UserService(UserRepository repo) {
+    private final JwtService jwtService;
+
+    public UserService(UserRepository repo, JwtService jwtService) {
         this.repo = repo;
+        this.jwtService = jwtService;
     }
 
     public ResponseEntity<ApiMessage> createUser(UserDomain domain) {
@@ -45,7 +49,11 @@ public class UserService {
         if (!ps.verify(domain.getPassword(), dbDomain.getPassword())) {
             throw new InvalidCredentialsException("Email or Password is incorrect.");
         }
-        
-        return ResponseEntityCreator.returnResponseEntity(200, "Logged in successfully.");
+        domain = dbDomain;
+
+        String token = jwtService.generateToken(domain);
+        AuthResponse responseBody = new AuthResponse(token, "Bearer");
+
+        return ResponseEntityCreator.returnResponseEntity(200, "Logged in successfully.", responseBody);
     }
 }
