@@ -47,7 +47,7 @@ public class UserService {
                 new InvalidCredentialsException("Email or password is incorrect."));
 
         if (!ps.verify(domain.getPassword(), dbDomain.getPassword())) {
-            throw new InvalidCredentialsException("Email or Password is incorrect.");
+            throw new InvalidCredentialsException("Email or password is incorrect.");
         }
         domain = dbDomain;
 
