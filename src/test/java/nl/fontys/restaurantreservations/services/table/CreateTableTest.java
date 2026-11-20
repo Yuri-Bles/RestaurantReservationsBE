@@ -35,14 +35,14 @@ class CreateTableTest
     void createTable_shouldCreateTable_whenValuesAreCorrect()
     {
         // Arrange
-        TableDomain expected = new TableDomain("T01", 4, TableStatus.Active);
+        TableDomain expected = new TableDomain("T01", 4, TableStatus.ACTIVE);
         TableDTO newTableDTO = mapper.toDTO(expected);
         ArgumentCaptor<TableDomain> captor = ArgumentCaptor.forClass(TableDomain.class);
 
-        when(repo.findByTableNumberAndStatus("T01", TableStatus.Active))
+        when(repo.findByTableNumberAndStatus("T01", TableStatus.ACTIVE))
                 .thenReturn(Optional.empty());
 
-        when(repo.findByTableNumberAndStatus("T01", TableStatus.Inactive))
+        when(repo.findByTableNumberAndStatus("T01", TableStatus.INACTIVE))
                 .thenReturn(Optional.empty());
 
         // Act
@@ -62,9 +62,9 @@ class CreateTableTest
     void createTable_shouldReturn400_whenTableNumberIsDuplicate()
     {
         // Arrange
-        TableDomain newTableDomain = new TableDomain("T01", 4, TableStatus.Active);
+        TableDomain newTableDomain = new TableDomain("T01", 4, TableStatus.ACTIVE);
         TableDTO newTableDTO = mapper.toDTO(newTableDomain);
-        when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.Active))
+        when(repo.findByTableNumberAndStatus(newTableDTO.tableNumber(), TableStatus.ACTIVE))
                 .thenReturn(Optional.of(newTableDomain));
 
         // Act

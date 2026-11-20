@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import nl.fontys.restaurantreservations.bll.enums.UserRole;
 
 @Entity
-@Table(name = "tables")
+@Table(name = "users")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

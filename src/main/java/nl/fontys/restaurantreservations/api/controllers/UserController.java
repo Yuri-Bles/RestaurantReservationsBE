@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    private UserDomainDTOMapper mapper;
+    private UserDomainDTOMapper mapper = new UserDomainDTOMapper();
 
     public UserController(UserService userService)
     {
@@ -26,7 +26,7 @@ public class UserController {
     @PostMapping // Default url, will make customer
     public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserRequest request)
     {
-        UserDTO dto = new UserDTO(request.email(), request.name(), request.password(), UserRole.Customer);
+        UserDTO dto = new UserDTO(request.email(), request.name(), request.password(), UserRole.CUSTOMER);
         UserDomain domain = mapper.toDomain(dto);
         return userService.createUser(domain);
     }

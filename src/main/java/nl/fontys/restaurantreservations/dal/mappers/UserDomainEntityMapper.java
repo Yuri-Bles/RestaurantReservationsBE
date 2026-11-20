@@ -23,6 +23,7 @@ public class UserDomainEntityMapper {
         entity.setEmail(domain.getEmail());
         entity.setName(domain.getName());
         entity.setPassword(domain.getPassword());
+        entity.setRole(domain.getRole());
 
         return entity;
     }

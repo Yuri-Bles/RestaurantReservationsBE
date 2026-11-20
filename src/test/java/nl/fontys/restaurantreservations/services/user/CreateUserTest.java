@@ -31,7 +31,7 @@ public class CreateUserTest {
     void createUser_shouldCreateTable_whenValuesAreCorrect()
     {
         // Arrange
-        UserDomain expected = new UserDomain("test@mail.com", "test", "pass123", UserRole.Customer);
+        UserDomain expected = new UserDomain("test@mail.com", "test", "pass123", UserRole.CUSTOMER);
         ArgumentCaptor<UserDomain> captor = ArgumentCaptor.forClass(UserDomain.class);
 
         when(repo.findByEmail(expected.getEmail()))
@@ -68,7 +68,7 @@ public class CreateUserTest {
     void createUser_shouldReturn400_whenEmailAlreadyExists()
     {
         // Arrange
-        UserDomain user = new UserDomain("test@mail.com", "test", "pass123", UserRole.Customer);
+        UserDomain user = new UserDomain("test@mail.com", "test", "pass123", UserRole.CUSTOMER);
 
         when(repo.findByEmail(user.getEmail()))
                 .thenReturn(Optional.of(user));

@@ -30,7 +30,7 @@ public class TableService
     public ResponseEntity<?> getAllActiveTables()
     {
         List<TableDomain> tables;
-        tables = repo.findAllByStatus(TableStatus.Active);
+        tables = repo.findAllByStatus(TableStatus.ACTIVE);
 
         if (tables.isEmpty())
         { throw new EmptyTableListException("Failed to get tables"); }
@@ -42,8 +42,8 @@ public class TableService
     public ResponseEntity<?> getAllExistingTables()
     {
         List<TableDomain> tables = Stream.concat(
-                repo.findAllByStatus(TableStatus.Active).stream(),
-                repo.findAllByStatus(TableStatus.Inactive).stream()
+                repo.findAllByStatus(TableStatus.ACTIVE).stream(),
+                repo.findAllByStatus(TableStatus.INACTIVE).stream()
             )
             .sorted(
                 Comparator.comparing(TableDomain::getStatus)
@@ -86,7 +86,7 @@ public class TableService
     public ResponseEntity<?> deleteTable(String tableNumber)
     {
         TableDomain domain = getTableByTableNumber(tableNumber);
-        domain.setStatus(TableStatus.Removed);
+        domain.setStatus(TableStatus.REMOVED);
 
         repo.save(domain);
         return ResponseEntityCreator.returnResponseEntity(200, "Table successfully removed.");
@@ -94,15 +94,15 @@ public class TableService
 
     private boolean isTableNumberAvailable(String tableNumber)
     {
-        Optional<TableDomain> activeResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active);
-        Optional<TableDomain> inactiveResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive);
+        Optional<TableDomain> activeResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.ACTIVE);
+        Optional<TableDomain> inactiveResult = repo.findByTableNumberAndStatus(tableNumber, TableStatus.INACTIVE);
         return (activeResult.isEmpty() && inactiveResult.isEmpty());
     }
 
     private TableDomain getTableByTableNumber(String tableNumber)
     {
-        return repo.findByTableNumberAndStatus(tableNumber, TableStatus.Active).or(() ->
-                repo.findByTableNumberAndStatus(tableNumber, TableStatus.Inactive)).orElseThrow(() ->
+        return repo.findByTableNumberAndStatus(tableNumber, TableStatus.ACTIVE).or(() ->
+                repo.findByTableNumberAndStatus(tableNumber, TableStatus.INACTIVE)).orElseThrow(() ->
                 new TableNotFoundException("Table doesn't exist")
         );
     }
